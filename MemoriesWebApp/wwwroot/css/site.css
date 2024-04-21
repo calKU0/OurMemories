@@ -1,0 +1,204 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    background-color: #000000;
+    font-family: 'Times New Roman';
+    color: #fff;
+}
+
+tr {
+    color: #fff;
+}
+
+th {
+    color: #fff;
+}
+
+table {
+    color: #fff;
+}
+
+.clock-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #000000;
+}
+
+h1 {
+    font-weight: bolder;
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#countdown-container {
+    position: relative;
+    margin-bottom: 10px;
+    margin-left: -110px;
+}
+
+h2 {
+    font-weight: bolder;
+    font-size: 2em;
+    text-align: left;
+    margin: 10px 0 0;
+    padding-left: 10px;
+    color: #fff;
+}
+
+#countdown {
+    font-size: 1.5em;
+    text-align: left;
+    margin-top: 5px;
+    margin-left: 10px;
+    color: #fff;
+}
+
+#progress-bar-container {
+    position: relative;
+    height: 25px;
+    background-color: #202020;
+    border: 1px solid #fff;
+    width: 570px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+#progress-bar {
+    height: 100%;
+    background-color: #ff69b4;
+    width: 0;
+    transition: width 1s ease-in-out;
+}
+
+.start-date {
+    left: 0;
+    top: 50%;
+    margin-left: 10px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.end-date {
+    left: 0;
+    top: 50%;
+    margin-left: 495px;
+    margin-top: -12px;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #fff;
+    white-space: nowrap;
+}
+
+#clock {
+    position: relative;
+    margin: auto;
+    width: 680px;
+    height: 680px;
+    border: 5px solid #fff;
+    border-radius: 50%;
+    font-size: 34px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+}
+
+.hand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: 50% 100%;
+    transform: translateY(-100%) rotate(0deg);
+    white-space: nowrap;
+    height: 231.2px;
+    background: linear-gradient(to bottom, #666, #333);
+    border-radius: 8px;
+}
+
+.number {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-shadow: 0px 0px 6px rgba(255, 255, 255, 0.3);
+}
+
+.dot {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@media only screen and (max-width: 768px) {
+    #clock {
+        width: 80vw;
+        height: 80vw;
+    }
+
+    .number {
+        font-size: 15px;
+    }
+
+    .hand {
+        height: 100px;
+    }
+
+    h2 {
+        font-size: 1.5em;
+        margin: 5px 0 0;
+    }
+
+    #countdown-container {
+        margin-left: 0px;
+    }
+
+    #countdown {
+        font-size: 1em;
+        margin-top: 3px;
+    }
+
+    #progress-bar-container {
+        width: 95%;
+        margin-bottom: 90px;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+    }
+
+    .end-date {
+        margin-left: 76%;
+    }
+}
