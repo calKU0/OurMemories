@@ -1,9 +1,15 @@
-﻿@{
+﻿@model IEnumerable<MemoriesWebApp.Models.Meeting>;
+
+@{
     ViewData["Title"] = "Home Page";
+    var previousMeeting = Model.ElementAtOrDefault(0);
+    var upcomingMeeting = Model.ElementAtOrDefault(1);
+
+    string formattedDateEndPrevious = previousMeeting != null ? previousMeeting.DateEnd.ToString("yyyy.MM.dd HH:mm:ss") : string.Empty;
+    string formattedDateEndUpcoming = upcomingMeeting != null ? upcomingMeeting.DateStart.ToString("yyyy.MM.dd HH:mm:ss") : string.Empty;
 }
 
     <div class="clock-container">
-        <h1>Zegar pokazujący czas kiedy o tobie myśle</h1>
         <div id="clock"></div>
 
         <div id="countdown-container">
@@ -12,8 +18,8 @@
         </div>
 
         <div id="progress-bar-container">
-            <div class="start-date">Start Date</div>
+            <div class="start-date">@formattedDateEndPrevious</div>
             <div id="progress-bar"></div>
-            <div class="end-date">End Date</div>
+            <div class="end-date">@formattedDateEndUpcoming</div>
         </div>
     </div>

@@ -6,8 +6,8 @@
     hours = hours % 24;
     const displayHours = (hours === 0) ? 12 : hours;
 
-    const targetDate = new Date("2024-04-26T08:20:00");
-    const timeRemaining = targetDate - now;
+    const timeRemaining = endDate - now;
+    console.log(endDateValue);
 
     const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
     const hoursRemaining = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -54,17 +54,12 @@
     clock.appendChild(dot);
     clock.offsetHeight;
 
-    const startDate = new Date("2024-04-14T17:00:00");
-    const endDate = new Date("2024-04-26T08:20:00");
     const totalTime = endDate - startDate;
     const elapsed = now - startDate;
 
     const progress = Math.max(0, Math.min(100, (elapsed / totalTime) * 100));
 
     updateProgressBar(progress);
-
-    const startLabel = document.querySelector('.start-date');
-    const endLabel = document.querySelector('.end-date');
 
     startLabel.innerHTML = formatDate(startDate);
     endLabel.innerHTML = formatDate(endDate);
@@ -90,6 +85,14 @@ function formatDate(date) {
     return date.toLocaleDateString('pl-PL', options);
 }
 
+const startLabel = document.querySelector('.start-date');
+const endLabel = document.querySelector('.end-date');
+var endDateValue = endLabel.textContent;
+var previousDateValue = startLabel.textContent;
+const startDate = new Date(previousDateValue);
+const endDate = new Date(endDateValue);
+
 setInterval(updateClock, 1000);
 
 updateClock();
+
