@@ -8,13 +8,14 @@
 
 <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
 @foreach (var item in Model) {
-string backgroundImage = !string.IsNullOrEmpty(item.ImageUrl) ? item.ImageUrl : "https://i.imgur.com/xCyCSn6.png";
+        string backgroundImage = !string.IsNullOrEmpty(item.ImageUrl) ? item.ImageUrl : "https://i.imgur.com/clR6N7I.png";
       <div class="col">
-            <div class="card card-cover h-100 overflow-hidden rounded-4 shadow-sm" style="background-image: url(@backgroundImage);">
+            <div class="card card-cover h-100 overflow-hidden rounded-4 shadow-sm" style="background-image: url(@backgroundImage); background-size: 604px 344px">
           <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold"></h3>
+            <h3 class="pt-5 mt-5 mb-5 display-6 lh-1 fw-bold"></h3>
+            <h2 class="pt-5 mt-3 mb-3 display-6 lh-1"></h2>
           </div>
-                <div class="card-footer d-flex justify-content-between align-items-end">
+                <div class="card-footer bg-transparent d-flex justify-content-between align-items-end">
                     <div>
                         <a class="btn btn-primary rounded-pill px-2.5 me-1" type="button" asp-action="Details" asp-route-id="@item.Id">Zobacz</a>
                         <a class="btn btn-secondary rounded-pill px-2.5" type="button" asp-action="Edit" asp-route-id="@item.Id">Edytuj</a>
