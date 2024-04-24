@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MemoriesWebApp.Data;
 using MemoriesWebApp.Models;
+using MemoriesWebApp.Interfaces;
+using MemoriesWebApp.ViewModels;
 
 namespace MemoriesWebApp.Controllers
 {
     public class ImagesController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IPhotoService _photoService;
 
-        public ImagesController(AppDbContext context)
+        public ImagesController(AppDbContext context, IPhotoService photoService)
         {
             _context = context;
+            this._photoService = photoService;
         }
 
         // GET: Images
@@ -57,16 +61,27 @@ namespace MemoriesWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Url,MeetingId")] Image image)
+        public async Task<IActionResult> Create(CreateImageViewModel imageVM)
         {
             if (ModelState.IsValid)
             {
+                var result = _photoService.AddPhotoAsync(imageVM.Url);
+                var image = new Image
+                {
+                    Name = imageVM.Name,
+                    Description = imageVM.Description,
+                    City = imageVM.City,
+                    Date = imageVM.Date,
+                    Url = result.Result.Url.ToString(),
+                    MeetingId = imageVM.MeetingId
+                };
+
                 _context.Add(image);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id", image.MeetingId);
-            return View(image);
+            ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id", imageVM.MeetingId);
+            return View(imageVM);
         }
 
         // GET: Images/Edit/5

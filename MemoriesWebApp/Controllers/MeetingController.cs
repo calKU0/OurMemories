@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MemoriesWebApp.Data;
 using MemoriesWebApp.Models;
+using MemoriesWebApp.Interfaces;
+using MemoriesWebApp.ViewModels;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MemoriesWebApp.Controllers
 {
     public class MeetingController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IPhotoService _photoService;
 
-        public MeetingController(AppDbContext context)
+        public MeetingController(AppDbContext context, IPhotoService photoService)
         {
             _context = context;
+            this._photoService = photoService;
         }
 
         // GET: Meeting
@@ -61,15 +66,26 @@ namespace MemoriesWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DateStart,DateEnd,MeetingCity,Realized")] Meeting meeting)
+        public async Task<IActionResult> Create(CreateMeetingViewModel meetingVM)
         {
             if (ModelState.IsValid)
             {
+                var result = meetingVM.ImageUrl == null ? null :_photoService.AddPhotoAsync(meetingVM.ImageUrl);
+                var meeting = new Meeting
+                {
+                    MeetingCity = meetingVM.MeetingCity,
+                    DateStart = meetingVM.DateStart,
+                    DateEnd = meetingVM.DateEnd,
+                    Realized = meetingVM.Realized,
+                    ImageUrl = result != null ? result.Result.Url.ToString() : null
+                };
+
                 _context.Add(meeting);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+
             }
-            return View(meeting);
+            return View(meetingVM);
         }
 
         // GET: Meeting/Edit/5
