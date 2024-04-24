@@ -40,6 +40,13 @@ namespace MemoriesWebApp.Controllers
                 return NotFound();
             }
 
+            var images = await _context.Images
+                .Where(i => i.MeetingId == id)
+                .ToListAsync();
+
+            ViewBag.Images = images;
+
+
             return View(meeting);
         }
 

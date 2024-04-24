@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\bootstrap-modal\**" />
+    <Content Remove="wwwroot\lib\bootstrap-modal\**" />
+    <EmbeddedResource Remove="wwwroot\lib\bootstrap-modal\**" />
+    <None Remove="wwwroot\lib\bootstrap-modal\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">

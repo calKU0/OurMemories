@@ -2,41 +2,56 @@
 
 @{
     ViewData["Title"] = "Details";
+    var images = ViewBag.Images as List<MemoriesWebApp.Models.Image>;
+    TimeSpan timeDifference = Model.DateEnd - Model.DateStart;
+    string timeDifferenceString = $"{timeDifference.Days} dni {timeDifference.Hours} godzin";
 }
 
-<h1>Details</h1>
+<div class="position-relative overflow-hidden p-3 p-md-3 m-md-3 text-center bg-body-tertiary">
+    <div class="col-md-5 p-lg-5 mx-auto my-4">
+        <h1 class="display-3 fw-bold mb-5 ">Album ze spotkania</h1>
+        <div class="row">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="fw-normal text-muted mb-3"><i class="bi bi-calendar-heart"></i> @Model.DateStart.ToString("dd.MM.yyyy HH:mm")</h3>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="fw-normal text-muted mb-3"><i class="bi bi-calendar-heart-fill"> </i>@Model.DateEnd.ToString("dd.MM.yyyy HH:mm")</h3>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3 class="fw-normal text-muted mb-3"><i class="bi bi-stopwatch"></i> @timeDifferenceString</h3>
+            </div>
+            <div class="col-md-6">
+                <h3 class="fw-normal text-muted mb-3"><i class="bi bi-pin-map"></i> @Model.MeetingCity</h3>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex gap-4 justify-content-center lead fw-normal">
+        <a class="btn btn-primary rounded-pill px-2.5 me-1" type="button" asp-action="Index">Wróć</a>
+        <a class="btn btn-danger rounded-pill px-2.5 me-1" type="button" asp-route-id="@Model.Id" asp-action="Delete">Usuń</a>
 
-<div>
-    <h4>Meeting</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateStart)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateStart)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateEnd)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateEnd)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MeetingCity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MeetingCity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Realized)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Realized)
-        </dd>
-    </dl>
+        <!--
+        TODO: Make an Add button witch adds a new picture
+        < class="btn btn-success rounded-pill px-2.5 me-1" type="button" asp-action="Add" asp-route-id="@Model.Id">Dodaj zdjęcie</a>
+        -->
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="row">
+    @foreach (var image in images)
+    {
+        <div class="col-md-6 pb-3">
+            <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+                <div class="my-3 p-3 d-flex flex-column justify-content-center">
+                    <h2 class="display-5" style="text-align:center">@image.Name</h2>
+                </div>
+                <div class="bg-dark shadow-sm mx-auto" border-radius: 21px 21px 0 0;">
+                    <img src="@image.Url" alt="Alternate Text" width=100% height=100% class="rounded"></img>
+                </div>
+            </div>
+        </div>
+    }
 </div>
+
+
+
