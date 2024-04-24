@@ -6,33 +6,45 @@
 
 <h1>Nasze spotkania</h1>
 
-<div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
-@foreach (var item in Model) {
+<div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-3">
+    @foreach (var item in Model)
+    {
         string backgroundImage = !string.IsNullOrEmpty(item.ImageUrl) ? item.ImageUrl : "https://i.imgur.com/clR6N7I.png";
-      <div class="col">
-            <div class="card card-cover h-100 overflow-hidden rounded-4 shadow-sm" style="background-image: url(@backgroundImage); background-size: 604px 344px">
-          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-            <h3 class="pt-5 mt-5 mb-5 display-6 lh-1 fw-bold"></h3>
-            <h2 class="pt-5 mt-3 mb-3 display-6 lh-1"></h2>
-          </div>
+        <div class="col">
+            <div class="card card-cover overflow-hidden rounded-4 shadow-sm phone-height" style="background-image: url(@backgroundImage); background-size: 100% 100%">
+                <div class="d-flex flex-column p-5 pb-3 text-white text-shadow-1 phone-height">
+                    <h3 class="pt-5 mt-5 mb-5 display-6 lh-1 fw-bold"></h3>
+                    <h2 class="pt-5 mt-3 mb-3 display-6 lh-1"></h2>
+                </div>
                 <div class="card-footer bg-transparent d-flex justify-content-between align-items-end">
                     <div>
-                        <a class="btn btn-primary rounded-pill px-2.5 me-1" type="button" asp-action="Details" asp-route-id="@item.Id">Zobacz</a>
+                        <a class="btn btn-primary rounded-pill px-2.5 me-0.5" type="button" asp-action="Details" asp-route-id="@item.Id">Zobacz</a>
                         <a class="btn btn-secondary rounded-pill px-2.5" type="button" asp-action="Edit" asp-route-id="@item.Id">Edytuj</a>
                     </div>
                     <div class="text-end">
-                        <svg class="bi me-1" width="1em" height="1em"><i class="bi bi-geo-fill"></i>&nbsp</svg>
+                        <svg class="bi me-1" width="1em" height="1em"><i class="bi bi-geo-fill"></i>&nbsp;</svg>
                         <medium>@item.MeetingCity</medium>
-                        <svg class="bi me-1" width="0.5em" height="1em"><i class="bi bi-calendar3"></i>&nbsp</svg>
+                        <svg class="bi me-1" width="0.5em" height="1em"><i class="bi bi-calendar3"></i>&nbsp;</svg>
                         <medium>@item.DateStart.ToShortDateString()</medium>
                     </div>
                 </div>
             </div>
         </div>
-      
-}
- </div>
+    }
+</div>
 
 <p>
     <a class="btn btn-success rounded-pill px-3" type="button" asp-action="Create">Dodaj nowe</a>
 </p>
+
+<script>
+    window.onload = function () {
+        var cards = document.querySelectorAll(".phone-height");
+        if (window.innerWidth <= 767) { 
+            cards.forEach(function (card) {
+                card.classList.remove("h-100");
+                card.classList.add("h-75");
+            });
+        }
+    }
+</script>
