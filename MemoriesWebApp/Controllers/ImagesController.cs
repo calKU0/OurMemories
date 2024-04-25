@@ -9,28 +9,28 @@ using MemoriesWebApp.Data;
 using MemoriesWebApp.Models;
 using MemoriesWebApp.Interfaces;
 using MemoriesWebApp.ViewModels;
-using Microsoft.IdentityModel.Tokens;
 
 namespace MemoriesWebApp.Controllers
 {
-    public class MeetingController : Controller
+    public class ImagesController : Controller
     {
         private readonly AppDbContext _context;
         private readonly IPhotoService _photoService;
 
-        public MeetingController(AppDbContext context, IPhotoService photoService)
+        public ImagesController(AppDbContext context, IPhotoService photoService)
         {
             _context = context;
             this._photoService = photoService;
         }
 
-        // GET: Meeting
+        // GET: Images
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Meetings.ToListAsync());
+            var appDbContext = _context.Images.Include(i => i.Meeting);
+            return View(await appDbContext.ToListAsync());
         }
 
-        // GET: Meeting/Details/5
+        // GET: Images/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -38,57 +38,53 @@ namespace MemoriesWebApp.Controllers
                 return NotFound();
             }
 
-            var meeting = await _context.Meetings
+            var image = await _context.Images
+                .Include(i => i.Meeting)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (meeting == null)
+            if (image == null)
             {
                 return NotFound();
             }
 
-            var images = await _context.Images
-                .Where(i => i.MeetingId == id)
-                .ToListAsync();
-
-            ViewBag.Images = images;
-
-
-            return View(meeting);
+            return View(image);
         }
 
-        // GET: Meeting/Create
+        // GET: Images/Create
         public IActionResult Create()
         {
+            ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id");
             return View();
         }
 
-        // POST: Meeting/Create
+        // POST: Images/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateMeetingViewModel meetingVM)
+        public async Task<IActionResult> Create(CreateImageViewModel imageVM)
         {
             if (ModelState.IsValid)
             {
-                var result = meetingVM.ImageUrl == null ? null :_photoService.AddPhotoAsync(meetingVM.ImageUrl);
-                var meeting = new Meeting
+                var result = _photoService.AddPhotoAsync(imageVM.Url);
+                var image = new Image
                 {
-                    MeetingCity = meetingVM.MeetingCity,
-                    DateStart = meetingVM.DateStart,
-                    DateEnd = meetingVM.DateEnd,
-                    Realized = meetingVM.Realized,
-                    ImageUrl = result != null ? result.Result.Url.ToString() : null
+                    Name = imageVM.Name,
+                    Description = imageVM.Description,
+                    City = imageVM.City,
+                    Date = imageVM.Date,
+                    Url = result.Result.Url.ToString(),
+                    MeetingId = imageVM.MeetingId
                 };
 
-                _context.Add(meeting);
+                _context.Add(image);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-
             }
-            return View(meetingVM);
+            ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id", imageVM.MeetingId);
+            return View(imageVM);
         }
 
-        // GET: Meeting/Edit/5
+        // GET: Images/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -96,22 +92,23 @@ namespace MemoriesWebApp.Controllers
                 return NotFound();
             }
 
-            var meeting = await _context.Meetings.FindAsync(id);
-            if (meeting == null)
+            var image = await _context.Images.FindAsync(id);
+            if (image == null)
             {
                 return NotFound();
             }
-            return View(meeting);
+            ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id", image.MeetingId);
+            return View(image);
         }
 
-        // POST: Meeting/Edit/5
+        // POST: Images/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DateStart,DateEnd,MeetingCity,Realized")] Meeting meeting)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Url,MeetingId")] Image image)
         {
-            if (id != meeting.Id)
+            if (id != image.Id)
             {
                 return NotFound();
             }
@@ -120,12 +117,12 @@ namespace MemoriesWebApp.Controllers
             {
                 try
                 {
-                    _context.Update(meeting);
+                    _context.Update(image);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MeetingExists(meeting.Id))
+                    if (!ImageExists(image.Id))
                     {
                         return NotFound();
                     }
@@ -136,10 +133,11 @@ namespace MemoriesWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(meeting);
+            ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id", image.MeetingId);
+            return View(image);
         }
 
-        // GET: Meeting/Delete/5
+        // GET: Images/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,34 +145,35 @@ namespace MemoriesWebApp.Controllers
                 return NotFound();
             }
 
-            var meeting = await _context.Meetings
+            var image = await _context.Images
+                .Include(i => i.Meeting)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (meeting == null)
+            if (image == null)
             {
                 return NotFound();
             }
 
-            return View(meeting);
+            return View(image);
         }
 
-        // POST: Meeting/Delete/5
+        // POST: Images/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var meeting = await _context.Meetings.FindAsync(id);
-            if (meeting != null)
+            var image = await _context.Images.FindAsync(id);
+            if (image != null)
             {
-                _context.Meetings.Remove(meeting);
+                _context.Images.Remove(image);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MeetingExists(int id)
+        private bool ImageExists(int id)
         {
-            return _context.Meetings.Any(e => e.Id == id);
+            return _context.Images.Any(e => e.Id == id);
         }
     }
 }

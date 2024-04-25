@@ -1,48 +1,74 @@
-﻿@model MemoriesWebApp.Models.Meeting
+﻿@using MemoriesWebApp.Data.Enum
+@model MemoriesWebApp.ViewModels.CreateMeetingViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Meeting</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="DateStart" class="control-label"></label>
-                <input asp-for="DateStart" class="form-control" />
-                <span asp-validation-for="DateStart" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateEnd" class="control-label"></label>
-                <input asp-for="DateEnd" class="form-control" />
-                <span asp-validation-for="DateEnd" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MeetingCity" class="control-label"></label>
-                <select asp-for="MeetingCity" class="form-control"></select>
-                <span asp-validation-for="MeetingCity" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Realized" /> @Html.DisplayNameFor(model => model.Realized)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<form method="post" class="needs-validation novalidate" asp-action="Create" enctype="multipart/form-data">
+    <div class="form-group row">
+        <label asp-for="MeetingCity" class="col-sm-2 col-form-label">Miejscowość</label>
+        <div class="col-sm-10">
+            <select asp-for="MeetingCity" asp-items="@Html.GetEnumSelectList<MeetingCity>()" class="form-control">
+                <option>--Wybierz--</option>
+            </select>
+            <span asp-validation-for="MeetingCity" class="text-danger"></span>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="form-group row pt-3">
+        <label asp-for="DateStart" class="col-sm-2 col-form-label">Data rozpoczęcia</label>
+        <div class="col-sm-10">
+            <input asp-for="DateStart" class="form-control" id="DateStart" placeholder="Data Rozpoczęcia" required>
+            <span asp-validation-for="DateStart" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row pt-3">
+        <label asp-for="DateEnd" class="col-sm-2 col-form-label">Data zakonczenia</label>
+        <div class="col-sm-10">
+            <input asp-for="DateEnd" class="form-control" id="DateEnd" placeholder="Data zakonczenia" required>
+            <span asp-validation-for="DateEnd" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row pt-3 form-check">
+        <label asp-for="Realized" class="form-check-label">
+            <div class="col-sm-10">
+            <input class="form-check-input" asp-for="Realized" /> Zrealizowano
+            <span asp-validation-for="Realized" class="text-danger"></span>
+            </div>
+        </label>
+    </div>
+    <div class="form-group row pt-3">
+        <label asp-for="ImageUrl" class="col-sm-2 col-form-label">Zdjęcie</label>
+        <div class="col-sm-10">
+            <input asp-for="ImageUrl" type="file" class="form-control" id="ImageUrl">
+        </div>
+    </div>
+    <div class="form-group row pt-3">
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Dodaj</button>
+        </div>
+    </div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            var forms = document.getElementsByClassName('needs-validation');
+
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
