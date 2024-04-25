@@ -3,6 +3,39 @@
 @{
     ViewData["Title"] = "Index";
 }
+<div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Czy napewno chcesz usunąć zdjecie?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row align-items-center justify-content-center p-2">
+                    <div class="col-auto">
+                        <svg class="bi mt-2 mb-2" style="color: red;" width="50" height="50">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" id="trash">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                            </svg>
+                        </svg>
+                    </div>
+                </div>
+                <div class="row align-items-center p-2">
+                        <p id="deleteMessage">Jest to akcja <strong style="color:red">nieodwracalna</strong> i nie będzie można już przywrócić tego zdjęcia i informacji o nim.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" asp-action="Delete" method="post">
+                    <input type="hidden" id="imageId" name="id" />
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="submit" class="btn btn-danger">Usuń</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <section class="jumbotron text-center">
     <div class="container">
         <h1 class="jumbotron-heading">Album</h1>
@@ -13,33 +46,43 @@
         </p>
     </div>
 </section>
+
 <div class="album py-5">
     <div class="container">
         <div class="row">
-        @foreach (var image in Model)
-        {
-            string imageCity = !string.IsNullOrEmpty(image.City) ? image.City : image.Meeting.MeetingCity.ToString();
-            string imageDate = image.Date != default ? image.Date.ToShortDateString() : image.Meeting.DateStart.ToShortDateString();
+            @foreach (var image in Model)
+            {
+                string imageCity = !string.IsNullOrEmpty(image.City) ? image.City : image.Meeting.MeetingCity.ToString();
+                string imageDate = image.Date != default ? image.Date.ToShortDateString() : image.Meeting.DateStart.ToShortDateString();
 
-            <div class="col-md-4">
-              <div class="card mb-4 shadow-sm">
-                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="@image.Description" src="@image.Url">
-                <div class="card-body">
-                  <p class="card-text">@image.Name - @image.Description</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      <button type="button" class="btn btn-sm btn-outline-danger">Usuń</button>
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="@image.Description" src="@image.Url">
+                        <div class="card-body">
+                            <p class="card-text">@image.Name - @image.Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger deleteButton" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@image.Id">Usuń</button>
+                                </div>
+                                <div class="text-muted">
+                                    <small class="m-2"><i class="bi bi-geo-fill"></i> @imageCity</small>
+                                    <small><i class="bi bi-calendar-heart"></i> @imageDate</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-muted">
-                        <small class="m-2"><i class="bi bi-geo-fill"></i> @imageCity</small>
-                        <small><i class="bi bi-calendar-heart"></i> @imageDate</small>
-                    </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-        }
+            }
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $('.deleteButton').click(function () {
+            var imageId = $(this).data('id');
+            $('#imageId').val(imageId);
+        });
+    </script>
+}
