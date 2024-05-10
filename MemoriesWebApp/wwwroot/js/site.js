@@ -66,6 +66,15 @@
     endLabel.style.right = `calc(${100 - progress}% + 40px)`;
 }
 
+$(window).on('load', function () {
+    var delay = 150;
+    $('.fadeDownClass').each(function (index) {
+        var element = $(this);
+        setTimeout(function () {
+            element.addClass('fade-down');
+        }, index * delay);
+    });
+});
 function updateHand(hand) {
     const element = document.getElementById(hand.id);
     const deg = hand.deg;
@@ -95,6 +104,9 @@ const endDate = new Date(endDateValue);
 setInterval(updateClock, 1000);
 
 updateClock();
+
+
+
 
 
 
