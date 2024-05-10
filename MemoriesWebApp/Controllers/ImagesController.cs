@@ -169,6 +169,11 @@ namespace MemoriesWebApp.Controllers
             if (image != null)
             {
                 _context.Images.Remove(image);
+
+                if (!string.IsNullOrEmpty(image.Url))
+                {
+                    _ = _photoService.DeletePhotoAsync(image.Url);
+                }
             }
 
             await _context.SaveChangesAsync();

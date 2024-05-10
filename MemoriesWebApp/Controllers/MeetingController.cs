@@ -168,9 +168,25 @@ namespace MemoriesWebApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var meeting = await _context.Meetings.FindAsync(id);
+            var meetingImages = await _context.Images
+                .Where(i => i.MeetingId == id)
+                .ToListAsync();
+
             if (meeting != null)
             {
                 _context.Meetings.Remove(meeting);
+                if (!string.IsNullOrEmpty(meeting.ImageUrl))
+                {
+                    _ = _photoService.DeletePhotoAsync(meeting.ImageUrl);
+                }
+
+                if (meetingImages != null)
+                {
+                    foreach (var image in meetingImages)
+                    {
+                        _ = _photoService.DeletePhotoAsync(image.Url);
+                    }
+                }
             }
 
             await _context.SaveChangesAsync();
