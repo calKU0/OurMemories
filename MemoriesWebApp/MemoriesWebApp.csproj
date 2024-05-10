@@ -8,9 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Nowy folder1\**" />
     <Compile Remove="wwwroot\lib\bootstrap-modal\**" />
+    <Content Remove="Nowy folder1\**" />
     <Content Remove="wwwroot\lib\bootstrap-modal\**" />
+    <EmbeddedResource Remove="Nowy folder1\**" />
     <EmbeddedResource Remove="wwwroot\lib\bootstrap-modal\**" />
+    <None Remove="Nowy folder1\**" />
     <None Remove="wwwroot\lib\bootstrap-modal\**" />
   </ItemGroup>
 
@@ -23,10 +27,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Nowy folder1\" />
   </ItemGroup>
 
 </Project>
