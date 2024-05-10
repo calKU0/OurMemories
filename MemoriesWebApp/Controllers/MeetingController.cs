@@ -70,7 +70,7 @@ namespace MemoriesWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = meetingVM.ImageUrl == null ? null :_photoService.AddPhotoAsync(meetingVM.ImageUrl);
+                var result = meetingVM.Image == null ? null :_photoService.AddPhotoAsync(meetingVM.Image);
                 var meeting = new Meeting
                 {
                     MeetingCity = meetingVM.MeetingCity,
@@ -97,45 +97,51 @@ namespace MemoriesWebApp.Controllers
             }
 
             var meeting = await _context.Meetings.FindAsync(id);
-            if (meeting == null)
+
+            var meetingVM = new EditMeetingViewModel
             {
-                return NotFound();
-            }
-            return View(meeting);
+                DateStart = meeting.DateStart,
+                DateEnd = meeting.DateEnd,
+                MeetingCity = meeting.MeetingCity,
+                Url = meeting.ImageUrl,
+                Realized = meeting.Realized,
+            };
+            return View(meetingVM);
         }
 
         // POST: Meeting/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DateStart,DateEnd,MeetingCity,Realized")] Meeting meeting)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DateStart,DateEnd,MeetingCity,Realized")] EditMeetingViewModel meetingVM)
         {
-            if (id != meeting.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
+                string url;
+                if (meetingVM.Image == null)
                 {
-                    _context.Update(meeting);
-                    await _context.SaveChangesAsync();
+                    url = meetingVM.Url;
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!MeetingExists(meeting.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    var result = await _photoService.AddPhotoAsync(meetingVM.Image);
+                    url = result.Url.ToString();
                 }
-                return RedirectToAction(nameof(Index));
+
+                var meeting = new Meeting
+                {
+                    Id = id,
+                    DateStart = meetingVM.DateStart,
+                    DateEnd = meetingVM.DateEnd,
+                    MeetingCity = meetingVM.MeetingCity,
+                    ImageUrl = url,
+                    Realized = meetingVM.Realized,
+                };
+
+                _context.Update(meeting);
+                await _context.SaveChangesAsync();
             }
-            return View(meeting);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Meeting/Delete/5
