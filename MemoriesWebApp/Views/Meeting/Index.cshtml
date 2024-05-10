@@ -3,14 +3,11 @@
 @{
     ViewData["Title"] = "Meetings";
 }
-
-<h1>Nasze spotkania</h1>
-
 <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-3">
     @foreach (var item in Model)
     {
         string backgroundImage = !string.IsNullOrEmpty(item.ImageUrl) ? item.ImageUrl : "https://i.imgur.com/clR6N7I.png";
-        <div class="col phone-heightcol" style="margin-bottom:-0%">
+        <div class="col phone-heightcol fadeDownClass" style="margin-bottom:-0%">
             <div class="card card-cover overflow-hidden rounded-5 shadow-sm phone-height" style="background-image: url(@backgroundImage); background-size: 101% 101%; height:100%">
                 <div class="d-flex flex-column p-5 pb-3 text-white text-shadow-1 phone-height1" style="height:100%">
                     <h3 class="pt-5 mt-5 mb-5 display-6 lh-1 fw-bold"></h3>

@@ -42,7 +42,6 @@
         <p class="lead text-muted">Zdjęcia ze wszystkich spotkań jakie miały dotychczas miejsce</p>
         <p>
             <a asp-action="Create" type="button" class="btn btn-primary my-2">Dodaj nowe zdjęcie</a>
-            <!-- <a href="#" class="btn btn-secondary my-2">Secondary action</a>-->
         </p>
     </div>
 </section>
@@ -55,14 +54,14 @@
                 string imageCity = !string.IsNullOrEmpty(image.City) ? image.City : image.Meeting.MeetingCity.ToString();
                 string imageDate = image.Date != default ? image.Date.ToShortDateString() : image.Meeting.DateStart.ToShortDateString();
 
-                <div class="col-md-4">
+                <div class="col-md-4 fadeDownClass">
                     <div class="card mb-4 shadow-sm">
                         <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="@image.Description" src="@image.Url">
                         <div class="card-body">
                             <p class="card-text">@image.Name - @image.Description</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    <a type="button" class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@image.Id">Zobacz</a>
                                     <button type="button" class="btn btn-sm btn-outline-danger deleteButton" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@image.Id">Usuń</button>
                                 </div>
                                 <div class="text-muted">
@@ -80,7 +79,7 @@
 
 @section Scripts {
     <script>
-        $('.deleteButton').click(function () {
+       $('.deleteButton').click(function () {
             var imageId = $(this).data('id');
             $('#imageId').val(imageId);
         });
