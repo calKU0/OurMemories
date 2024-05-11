@@ -21,7 +21,7 @@ namespace MemoriesWebApp.Controllers
         public MeetingController(AppDbContext context, IPhotoService photoService)
         {
             _context = context;
-            this._photoService = photoService;
+            this._photoService = photoService;        
         }
 
         // GET: Meeting
@@ -58,6 +58,7 @@ namespace MemoriesWebApp.Controllers
         // GET: Meeting/Create
         public IActionResult Create()
         {
+            TempData["ShowModal"] = false;
             return View();
         }
 
@@ -70,14 +71,14 @@ namespace MemoriesWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = meetingVM.ImageUrl == null ? null :_photoService.AddPhotoAsync(meetingVM.ImageUrl);
+                var result = meetingVM.Image == null ? null :_photoService.AddPhotoAsync(meetingVM.Image);
                 var meeting = new Meeting
                 {
                     MeetingCity = meetingVM.MeetingCity,
                     DateStart = meetingVM.DateStart,
                     DateEnd = meetingVM.DateEnd,
                     Realized = meetingVM.Realized,
-                    ImageUrl = result != null ? result.Result.Url.ToString() : null
+                    ImageUrl = result != null ? result.Result.Url.ToString() : "https://i.imgur.com/clR6N7I.png"
                 };
 
                 _context.Add(meeting);
@@ -91,52 +92,61 @@ namespace MemoriesWebApp.Controllers
         // GET: Meeting/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            TempData["ShowModal"] = false;
             if (id == null)
             {
                 return NotFound();
             }
 
             var meeting = await _context.Meetings.FindAsync(id);
-            if (meeting == null)
+
+            var meetingVM = new EditMeetingViewModel
             {
-                return NotFound();
-            }
-            return View(meeting);
+                DateStart = meeting.DateStart,
+                DateEnd = meeting.DateEnd,
+                MeetingCity = meeting.MeetingCity,
+                Url = meeting.ImageUrl,
+                Realized = meeting.Realized,
+            };
+            return View(meetingVM);
         }
 
         // POST: Meeting/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DateStart,DateEnd,MeetingCity,Realized")] Meeting meeting)
+        public async Task<IActionResult> Edit(int id, EditMeetingViewModel meetingVM)
         {
-            if (id != meeting.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
+                string url;
+                if (meetingVM.Image == null)
                 {
-                    _context.Update(meeting);
-                    await _context.SaveChangesAsync();
+                    url = meetingVM.Url;
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!MeetingExists(meeting.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    var result = await _photoService.AddPhotoAsync(meetingVM.Image);
+                    url = result.Url.ToString();
                 }
-                return RedirectToAction(nameof(Index));
+
+                var meeting = new Meeting
+                {
+                    Id = id,
+                    DateStart = meetingVM.DateStart,
+                    DateEnd = meetingVM.DateEnd,
+                    MeetingCity = meetingVM.MeetingCity,
+                    ImageUrl = url,
+                    Realized = meetingVM.Realized,
+                };
+
+                _context.Update(meeting);
+                await _context.SaveChangesAsync();
+
+                TempData["ShowModal"] = true;
+
             }
-            return View(meeting);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Meeting/Delete/5
@@ -163,9 +173,25 @@ namespace MemoriesWebApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var meeting = await _context.Meetings.FindAsync(id);
+            var meetingImages = await _context.Images
+                .Where(i => i.MeetingId == id)
+                .ToListAsync();
+
             if (meeting != null)
             {
                 _context.Meetings.Remove(meeting);
+                if (!string.IsNullOrEmpty(meeting.ImageUrl))
+                {
+                    _ = _photoService.DeletePhotoAsync(meeting.ImageUrl);
+                }
+
+                if (meetingImages != null)
+                {
+                    foreach (var image in meetingImages)
+                    {
+                        _ = _photoService.DeletePhotoAsync(image.Url);
+                    }
+                }
             }
 
             await _context.SaveChangesAsync();
