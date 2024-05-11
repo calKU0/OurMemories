@@ -1,7 +1,8 @@
 # OurMemories
 
 OurMemories is an online platform for saving memories with your partner (espesially long distance one).
-It has as a digital-analog clock and countdown for your upcoming meeting. Moreover, it stores your previous meetings and you can attach pictures to them.
+It has a digital-analog clock and countdown for your upcoming meeting.
+It allows you to upload your photos and make an album out of each meeting
 
 ## 🏃 Getting Started
 
