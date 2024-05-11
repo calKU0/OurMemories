@@ -34,12 +34,11 @@ namespace MemoriesWebApp.Services
             return uploadResult;
         }
 
-        public async Task<DeletionResult> DeletePhotoAsync(string publicId)
+        public async Task<DeletionResult> DeletePhotoAsync(string publicUrl)
         {
+            var publicId = publicUrl.Split('/').Last().Split('.')[0];
             var deleteParams = new DeletionParams(publicId);
-            var result = await _cloudinary.DestroyAsync(deleteParams);
-
-            return result;
+            return await _cloudinary.DestroyAsync(deleteParams);
         }
     }
 }

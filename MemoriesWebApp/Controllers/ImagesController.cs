@@ -65,7 +65,7 @@ namespace MemoriesWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = _photoService.AddPhotoAsync(imageVM.Url);
+                var result = _photoService.AddPhotoAsync(imageVM.Image);
                 var image = new Image
                 {
                     Name = imageVM.Name,
@@ -93,48 +93,54 @@ namespace MemoriesWebApp.Controllers
             }
 
             var image = await _context.Images.FindAsync(id);
-            if (image == null)
+            var imageVM = new EditImageViewModel
             {
-                return NotFound();
-            }
-            ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id", image.MeetingId);
-            return View(image);
+                Name = image.Name,
+                Description = image.Description,
+                City = image.City,
+                Date = image.Date,
+                Url = image.Url,
+                MeetingId = image.MeetingId
+            };
+            return View(imageVM);
         }
 
         // POST: Images/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Url,MeetingId")] Image image)
+        public async Task<IActionResult> Edit(int id, EditImageViewModel imageVM)
         {
-            if (id != image.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
+                string url;
+                if (imageVM.Image == null)
                 {
-                    _context.Update(image);
-                    await _context.SaveChangesAsync();
+                    url = imageVM.Url;
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ImageExists(image.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    var result = await _photoService.AddPhotoAsync(imageVM.Image);
+                    url = result.Url.ToString();
                 }
-                return RedirectToAction(nameof(Index));
+
+                var image = new Image
+                {
+                    Id = id,
+                    Name = imageVM.Name,
+                    Description = imageVM.Description,
+                    City = imageVM.City,
+                    Date = imageVM.Date,
+                    Url = url,
+                    MeetingId = imageVM.MeetingId
+                };
+
+                _context.Update(image);
+                await _context.SaveChangesAsync();
+
+                TempData["ShowModal"] = true;
             }
-            ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id", image.MeetingId);
-            return View(image);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Images/Delete/5
@@ -165,6 +171,11 @@ namespace MemoriesWebApp.Controllers
             if (image != null)
             {
                 _context.Images.Remove(image);
+
+                if (!string.IsNullOrEmpty(image.Url))
+                {
+                    _ = _photoService.DeletePhotoAsync(image.Url);
+                }
             }
 
             await _context.SaveChangesAsync();

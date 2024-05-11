@@ -2,6 +2,42 @@ html {
     font-size: 14px;
 }
 
+.fade-down {
+    opacity: 0;
+    animation: fade-down 0.5s forwards;
+}
+.jumbotron {
+    animation: slide-down 1s forwards;
+}
+
+.fadeDownClass {
+    opacity: 0;
+}
+
+@keyframes fade-down {
+    0% {
+        opacity: 0;
+        transform: translateY(-40px) translateX(-40px) scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0px) translateX(0px) scale(1);
+    }
+}
+
+@keyframes slide-down {
+    0% {
+        opacity: 0;
+        transform: translateY(-70px) scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+    }
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }

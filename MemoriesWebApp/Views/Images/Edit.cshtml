@@ -1,49 +1,103 @@
-﻿@model MemoriesWebApp.Models.Image
+﻿@model MemoriesWebApp.ViewModels.EditImageViewModel
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Image</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+<!-- Modal for confirmation saving -->
+<div class="modal fade" id="saveModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Czy napewno chcesz zapisać zmiany?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+            <div class="modal-body">
+                <div class="row align-items-center justify-content-center p-2">
+                    <div class="col-auto">
+                        <svg class="bi mt-2 mb-2" style="color: green" ; width="50" height="50">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
+                            </svg>
+                        </svg>
+                    </div>
+                </div>
+                <div class="row align-items-center p-2">
+                    <p id="deleteMessage">Zapisanie zmian spowoduje <strong style="color:green">nieodwracalne</strong> nadpisanie istniejących informacji o spotkaniu</p>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Url" class="control-label"></label>
-                <input asp-for="Url" class="form-control" />
-                <span asp-validation-for="Url" class="text-danger"></span>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Zamknij</button>
+                <button id="confirmSaveButton" type="button" class="btn btn-success">Zapisz</button>
             </div>
-            <div class="form-group">
-                <label asp-for="MeetingId" class="control-label"></label>
-                <select asp-for="MeetingId" class="form-control" asp-items="ViewBag.MeetingId"></select>
-                <span asp-validation-for="MeetingId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<form id="editForm" method="post" class="needs-validation novalidate" asp-action="Edit" enctype="multipart/form-data">
+    <div class="form-group row pt-3">
+        <label asp-for="Name" class="col-sm-2 col-form-label">Nazwa zdjęcia</label>
+        <div class="col-sm-10">
+            <input asp-for="Name" class="form-control" id="Name" placeholder="Nazwa zdjęcia">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row pt-3">
+        <label asp-for="Description" class="col-sm-2 col-form-label">Opis zdjęcia</label>
+        <div class="col-sm-10">
+            <input asp-for="Description" class="form-control" id="Description" placeholder="Opis zdjęcia">
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row pt-3">
+        <label asp-for="Date" class="col-sm-2 col-form-label">Data</label>
+        <div class="col-sm-10">
+            <input asp-for="Date" class="form-control" id="Date" placeholder="Data">
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row pt-3">
+        <label asp-for="City" class="col-sm-2 col-form-label">Miejscowość</label>
+        <div class="col-sm-10">
+            <input asp-for="City" class="form-control" id="DateEnd" placeholder="Miejscowość">
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row pt-3">
+        <label asp-for="Image" class="col-sm-2 col-form-label">Zdjęcie</label>
+        <div class="col-sm-10">
+            <input asp-for="Url" class="form-control" id="Url" type="hidden">
+            <input asp-for="Image" type="file" class="form-control" id="Image">
+        </div>
+    </div>
+    <div class="form-group row pt-3">
+        <label asp-for="MeetingId" class="col-sm-2 col-form-label">Numer spotkania</label>
+        <div class="col-sm-10">
+            <input asp-for="MeetingId" class="form-control" id="MeetingId">
+            <!--<select asp-for="MeetingId" class="form-control" id="MeetingId"></select>-->
+        </div>
+    </div>
+    <div class="form-group row pt-3">
+        <div class="col-sm-10">
+            <form>
+                <input type="button" value="Powrót" class="btn btn-outline-secondary" onclick="history.back()">
+            </form>
+            <a id="openSaveModalButton" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#saveModal">Zapisz</a>
+        </div>
+    </div>
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $('#saveModal').on('show.bs.modal', function (e) {
+            $('#confirmSaveButton').click(function () {
+                $('#editForm').submit();
+            });
+        });
+    </script>
 }
