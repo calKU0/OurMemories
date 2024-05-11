@@ -61,7 +61,7 @@
         </div>
     </div>
     <div class="d-flex gap-4 justify-content-center lead fw-normal">
-        <a class="btn btn-outline-secondary rounded-pill px-5 me-1 btn-lg" type="button" onclick="history.back()">Wróć</a>
+        <a class="btn btn-outline-secondary rounded-pill px-5 me-1 btn-lg" type="button" asp-action="Index">Wróć</a>
         <a class="btn btn-primary rounded-pill px-5 me-1 btn-lg" type="button" asp-action="Edit" asp-route-id=@Model.Id>Edytuj</a>
         <a type="button" class="btn btn-danger rounded-pill px-5 me-1 btn-lg" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="Id">Usuń</a>
 

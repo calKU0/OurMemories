@@ -21,7 +21,7 @@ namespace MemoriesWebApp.Controllers
         public MeetingController(AppDbContext context, IPhotoService photoService)
         {
             _context = context;
-            this._photoService = photoService;
+            this._photoService = photoService;        
         }
 
         // GET: Meeting
@@ -58,6 +58,7 @@ namespace MemoriesWebApp.Controllers
         // GET: Meeting/Create
         public IActionResult Create()
         {
+            TempData["ShowModal"] = false;
             return View();
         }
 
@@ -77,7 +78,7 @@ namespace MemoriesWebApp.Controllers
                     DateStart = meetingVM.DateStart,
                     DateEnd = meetingVM.DateEnd,
                     Realized = meetingVM.Realized,
-                    ImageUrl = result != null ? result.Result.Url.ToString() : null
+                    ImageUrl = result != null ? result.Result.Url.ToString() : "https://i.imgur.com/clR6N7I.png"
                 };
 
                 _context.Add(meeting);
@@ -91,6 +92,7 @@ namespace MemoriesWebApp.Controllers
         // GET: Meeting/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            TempData["ShowModal"] = false;
             if (id == null)
             {
                 return NotFound();
@@ -113,7 +115,7 @@ namespace MemoriesWebApp.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DateStart,DateEnd,MeetingCity,Realized")] EditMeetingViewModel meetingVM)
+        public async Task<IActionResult> Edit(int id, EditMeetingViewModel meetingVM)
         {
             if (ModelState.IsValid)
             {
@@ -140,6 +142,9 @@ namespace MemoriesWebApp.Controllers
 
                 _context.Update(meeting);
                 await _context.SaveChangesAsync();
+
+                TempData["ShowModal"] = true;
+
             }
             return RedirectToAction(nameof(Index));
         }
