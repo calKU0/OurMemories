@@ -1,4 +1,10 @@
-﻿function updateClock() {
+﻿$(document).ready(function () {
+    var successMessage = '@TempData["ShowModal"]';
+    if (successMessage) {
+        $('#infoModal').modal('show');
+    }
+});
+function updateClock() {
     const now = new Date();
     let hours = now.getHours();
     const minutes = now.getMinutes();

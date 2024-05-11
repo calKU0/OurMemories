@@ -109,7 +109,7 @@ namespace MemoriesWebApp.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Url,MeetingId")] EditImageViewModel imageVM)
+        public async Task<IActionResult> Edit(int id, EditImageViewModel imageVM)
         {
             if (ModelState.IsValid)
             {
@@ -137,6 +137,8 @@ namespace MemoriesWebApp.Controllers
 
                 _context.Update(image);
                 await _context.SaveChangesAsync();
+
+                TempData["ShowModal"] = true;
             }
             return RedirectToAction(nameof(Index));
         }

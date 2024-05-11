@@ -7,7 +7,7 @@
         public string? Description { get; set; }
         public string? City { get; set; }
         public DateOnly Date { get; set; }
-        public IFormFile Url { get; set; }
+        public IFormFile Image { get; set; }
         public int MeetingId { get; set; }
 
     }
