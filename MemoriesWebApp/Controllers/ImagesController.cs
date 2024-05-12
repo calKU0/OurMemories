@@ -102,6 +102,8 @@ namespace MemoriesWebApp.Controllers
                 Url = image.Url,
                 MeetingId = image.MeetingId
             };
+
+            ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id");
             return View(imageVM);
         }
 
