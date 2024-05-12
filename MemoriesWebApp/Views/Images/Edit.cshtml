@@ -54,7 +54,7 @@
     <div class="form-group row pt-3">
         <label asp-for="Date" class="col-sm-2 col-form-label">Data</label>
         <div class="col-sm-10">
-            <input asp-for="Date" class="form-control" id="Date" placeholder="Data">
+            <input asp-for="Date" type="Date" class="form-control" id="Date" placeholder="Data">
             <span asp-validation-for="Date" class="text-danger"></span>
         </div>
     </div>
@@ -66,17 +66,16 @@
         </div>
     </div>
     <div class="form-group row pt-3">
+        <label asp-for="MeetingId" class="col-sm-2 col-form-label">Numer spotkania</label>
+        <div class="col-sm-10">
+            <select asp-for="MeetingId" class="form-control" id="MeetingId" asp-items="ViewBag.MeetingId"></select>
+        </div>
+    </div>
+    <div class="form-group row pt-3">
         <label asp-for="Image" class="col-sm-2 col-form-label">Zdjęcie</label>
         <div class="col-sm-10">
             <input asp-for="Url" class="form-control" id="Url" type="hidden">
             <input asp-for="Image" type="file" class="form-control" id="Image">
-        </div>
-    </div>
-    <div class="form-group row pt-3">
-        <label asp-for="MeetingId" class="col-sm-2 col-form-label">Numer spotkania</label>
-        <div class="col-sm-10">
-            <input asp-for="MeetingId" class="form-control" id="MeetingId">
-            <!--<select asp-for="MeetingId" class="form-control" id="MeetingId"></select>-->
         </div>
     </div>
     <div class="form-group row pt-3">
