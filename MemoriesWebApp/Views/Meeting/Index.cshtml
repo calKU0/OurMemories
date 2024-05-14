@@ -3,58 +3,32 @@
 @{
     ViewData["Title"] = "Meetings";
 }
-<div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-3">
-    @foreach (var item in Model)
-    {
-        string backgroundImage = !string.IsNullOrEmpty(item.ImageUrl) ? item.ImageUrl : "https://i.imgur.com/clR6N7I.png";
-        <div class="col phone-heightcol fadeDownClass" style="margin-bottom:-0%">
-            <div class="card card-cover overflow-hidden rounded-5 shadow-sm phone-height" style="background-image: url(@backgroundImage); background-size: 101% 101%; height:100%">
-                <div class="d-flex flex-column p-5 pb-3 text-white text-shadow-1 phone-height1" style="height:100%">
-                    <h3 class="pt-5 mt-5 mb-5 display-6 lh-1 fw-bold"></h3>
-                    <h3 class="pt-5 mt-5 mb-4 display-4 lh-1 fw-bold"></h3>
-                </div>
-                <div class="card-footer bg-transparent d-flex justify-content-between align-items-end">
-                    <div>
-                        <a class="btn btn-primary rounded-pill px-2 me-0.5" type="button" asp-action="Details" asp-route-id="@item.Id">Zobacz</a>
-                        <a class="btn btn-secondary rounded-pill px-2" type="button" asp-action="Edit" asp-route-id="@item.Id">Edytuj</a>
-                        
-                    </div>
-                    <div class="text-end">
-                        <svg class="bi me-1" width="0.5em" height="1em"><i class="bi bi-geo-fill"></i>&nbsp;</svg>
-                        <medium>@item.MeetingCity</medium>
-                        <svg class="bi me-1" width="0.5em" height="1em"><i class="bi bi-calendar3"></i>&nbsp;</svg>
-                        <medium>@item.DateStart.ToShortDateString()</medium>
+<div class="album py-2 m-1">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            string backgroundImage = !string.IsNullOrEmpty(item.ImageUrl) ? item.ImageUrl : "https://i.imgur.com/clR6N7I.png";
+
+            <div class="col-md-4 fadeDownClass">
+                <div class="card mb-4 shadow-sm">
+                    <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" src=@backgroundImage>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group gap-1">
+                                <a class="btn btn-sm btn-primary rounded-pill" type="button" asp-action="Details" asp-route-id="@item.Id">Zobacz</a>
+                                <a class="btn btn-sm btn-secondary rounded-pill" type="button" asp-action="Edit" asp-route-id="@item.Id">Edytuj</a>
+                            </div>
+                            <div class="text-muted">
+                                <i class="bi bi-geo-fill"></i><medium>@item.MeetingCity</medium>&nbsp;
+                                <i class="bi bi-calendar3"></i><medium> @item.DateStart.ToShortDateString()</medium>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
+    <p>
+        <a class="btn btn-success rounded-pill px-3" type="button" asp-action="Create">Dodaj nowe</a>
+    </p>
 </div>
-
-<p class="pt-4">
-    <a class="btn btn-success rounded-pill px-3" type="button" asp-action="Create">Dodaj nowe</a>
-</p>
-
-<script>
-    window.onload = function () {
-        var cards = document.querySelectorAll(".phone-height");
-        if (window.innerWidth <= 767) {
-            cards.forEach(function (card) {
-                card.style.height = "60%";
-            });
-        }
-        var cols = document.querySelectorAll(".phone-heightcol");
-        if (window.innerWidth <= 767) {
-            cols.forEach(function (col) {
-                col.style.marginBottom = "-35%";
-            });
-        
-        }
-        var cards1 = document.querySelectorAll(".phone-height1");
-        if (window.innerWidth <= 767) {
-            cards1.forEach(function (card1) {
-                card1.style.height = "75%";
-            });
-        }
-    }
-</script>
