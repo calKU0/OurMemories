@@ -4,6 +4,7 @@ using MemoriesWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MemoriesWebApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240514170800_Identity")]
+    partial class Identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -294,7 +297,7 @@ namespace MemoriesWebApp.Migrations
 
             modelBuilder.Entity("MemoriesWebApp.Models.Image", b =>
                 {
-                    b.HasOne("MemoriesWebApp.Models.AppUser", "AppUser")
+                    b.HasOne("MemoriesWebApp.Models.AppUser", null)
                         .WithMany("Images")
                         .HasForeignKey("AppUserId");
 
@@ -304,18 +307,14 @@ namespace MemoriesWebApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AppUser");
-
                     b.Navigation("Meeting");
                 });
 
             modelBuilder.Entity("MemoriesWebApp.Models.Meeting", b =>
                 {
-                    b.HasOne("MemoriesWebApp.Models.AppUser", "AppUser")
+                    b.HasOne("MemoriesWebApp.Models.AppUser", null)
                         .WithMany("Meetings")
                         .HasForeignKey("AppUserId");
-
-                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

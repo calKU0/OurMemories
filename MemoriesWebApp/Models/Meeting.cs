@@ -13,5 +13,8 @@ namespace MemoriesWebApp.Models
         public MeetingCity MeetingCity { get; set; }
         public string? ImageUrl { get; set; }
         public bool Realized { get; set; }
+        [ForeignKey("AppUser")]
+        public string? AppUserId { get; set; }
+        public AppUser? AppUser { get; set; }
     }
 }
