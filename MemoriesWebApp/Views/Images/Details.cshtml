@@ -64,11 +64,11 @@
                 </div>
             </div>
 
-            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                <a type="button" class="btn btn-outline-secondary btn-lg px-4" onclick="history.back()">&nbsp&nbspWróć&nbsp&nbsp</a>
-                <a type="button" class="btn btn-success btn-lg px-5" asp-controller="Meeting" asp-action="Details" asp-route-id=@Model.MeetingId>Album ze spotkania</a>
-                <a type="button" class="btn btn-primary btn-lg px-5" asp-action="Edit" asp-route-id=@Model.Id>Edytuj</a>
-                <a type="button" class="btn btn-danger btn-lg px-5" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="Id">Usuń</a>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <a type="button" class="btn btn-outline-secondary btn-lg px-4" onclick="history.back()">&nbsp&nbsp&nbspWróć&nbsp&nbsp&nbsp&nbsp</a>
+                <a type="button" class="btn btn-success btn-lg px-4" asp-controller="Meeting" asp-action="Details" asp-route-id=@Model.MeetingId>Album ze spotkania</a>
+                <a type="button" class="btn btn-primary btn-lg px-4" asp-action="Edit" asp-route-id=@Model.Id>Edytuj</a>
+                <a type="button" class="btn btn-danger btn-lg px-4" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="Id">Usuń</a>
             </div>
         </div>
     </div>
