@@ -15,5 +15,8 @@ namespace MemoriesWebApp.Models
         [ForeignKey("Meeting")]
         public int MeetingId { get; set; }
         public Meeting? Meeting { get; set; }
+        [ForeignKey("AppUser")]
+        public string? AppUserId { get; set; }
+        public AppUser? AppUser { get; set; }
     }
 }
