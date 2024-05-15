@@ -17,7 +17,7 @@ namespace MemoriesWebApp.Controllers
             _signInManager = signInManager;
             _context = context;
         }
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl)
         {
             var response = new LoginViewModel();
             return View(response);
@@ -88,7 +88,7 @@ namespace MemoriesWebApp.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
