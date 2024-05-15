@@ -52,17 +52,24 @@ namespace MemoriesWebApp.Controllers
         // GET: Images/Create
         public IActionResult Create()
         {
+            if (!(User.IsInRole("admin") || User.IsInRole("superuser")))
+            {
+                return NotFound();
+            }
+
             ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id");
             return View();
         }
 
-        // POST: Images/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateImageViewModel imageVM)
         {
+            if (!(User.IsInRole("admin") || User.IsInRole("superuser")))
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 var result = _photoService.AddPhotoAsync(imageVM.Image);
@@ -73,6 +80,7 @@ namespace MemoriesWebApp.Controllers
                     City = imageVM.City,
                     Date = imageVM.Date,
                     Url = result.Result.Url.ToString(),
+                    IsVisableForUser = imageVM.IsVisableForUser,
                     MeetingId = imageVM.MeetingId
                 };
 
@@ -87,6 +95,11 @@ namespace MemoriesWebApp.Controllers
         // GET: Images/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!(User.IsInRole("admin") || User.IsInRole("superuser")))
+            {
+                return NotFound();
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -100,6 +113,7 @@ namespace MemoriesWebApp.Controllers
                 City = image.City,
                 Date = image.Date,
                 Url = image.Url,
+                IsVisableForUser = image.IsVisableForUser,
                 MeetingId = image.MeetingId
             };
 
@@ -108,11 +122,14 @@ namespace MemoriesWebApp.Controllers
         }
 
         // POST: Images/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         public async Task<IActionResult> Edit(int id, EditImageViewModel imageVM)
         {
+            if (!(User.IsInRole("admin") || User.IsInRole("superuser")))
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 string url;
@@ -134,6 +151,7 @@ namespace MemoriesWebApp.Controllers
                     City = imageVM.City,
                     Date = imageVM.Date,
                     Url = url,
+                    IsVisableForUser = imageVM.IsVisableForUser,
                     MeetingId = imageVM.MeetingId
                 };
 
@@ -145,30 +163,16 @@ namespace MemoriesWebApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Images/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var image = await _context.Images
-                .Include(i => i.Meeting)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (image == null)
-            {
-                return NotFound();
-            }
-
-            return View(image);
-        }
-
         // POST: Images/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!(User.IsInRole("admin") || User.IsInRole("superuser")))
+            {
+                return NotFound();
+            }
+
             var image = await _context.Images.FindAsync(id);
             if (image != null)
             {
