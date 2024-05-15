@@ -58,17 +58,25 @@ namespace MemoriesWebApp.Controllers
         // GET: Meeting/Create
         public IActionResult Create()
         {
+            if (!(User.IsInRole("admin") || User.IsInRole("superuser")))
+            {
+                return NotFound();
+            }
+
             TempData["ShowModal"] = false;
             return View();
         }
 
         // POST: Meeting/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateMeetingViewModel meetingVM)
         {
+            if (!(User.IsInRole("admin") || User.IsInRole("superuser")))
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 var result = meetingVM.Image == null ? null :_photoService.AddPhotoAsync(meetingVM.Image);
@@ -92,6 +100,11 @@ namespace MemoriesWebApp.Controllers
         // GET: Meeting/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!(User.IsInRole("admin") || User.IsInRole("superuser")))
+            {
+                return NotFound();
+            }
+
             TempData["ShowModal"] = false;
             if (id == null)
             {
@@ -112,11 +125,14 @@ namespace MemoriesWebApp.Controllers
         }
 
         // POST: Meeting/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         public async Task<IActionResult> Edit(int id, EditMeetingViewModel meetingVM)
         {
+            if (!(User.IsInRole("admin") || User.IsInRole("superuser")))
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 string url;
@@ -149,29 +165,16 @@ namespace MemoriesWebApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Meeting/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var meeting = await _context.Meetings
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (meeting == null)
-            {
-                return NotFound();
-            }
-
-            return View(meeting);
-        }
-
         // POST: Meeting/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("superuser"))
+            {
+                return NotFound();
+            }
+
             var meeting = await _context.Meetings.FindAsync(id);
             var meetingImages = await _context.Images
                 .Where(i => i.MeetingId == id)
