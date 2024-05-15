@@ -71,6 +71,14 @@
             <select asp-for="MeetingId" class="form-control" id="MeetingId" asp-items="ViewBag.MeetingId"></select>
         </div>
     </div>
+    <div class="form-group row pt-3 form-check">
+        <label asp-for="IsVisableForUser" class="form-check-label">
+            <div class="col-sm-10">
+                <input class="form-check-input" asp-for="IsVisableForUser" /> Czy widoczne dla użytkownika
+                <span asp-validation-for="IsVisableForUser" class="text-danger"></span>
+            </div>
+        </label>
+    </div>
     <div class="form-group row pt-3">
         <label asp-for="Image" class="col-sm-2 col-form-label">Zdjęcie</label>
         <div class="col-sm-10">

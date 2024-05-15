@@ -24,6 +24,34 @@ body {
     height: 100vh;
 }
 
+.blurImage {
+    filter: blur(12px);
+    -webkit-filter: blur(12px);
+    -moz-filter: blur(12px);
+    -o-filter: blur(12px);
+    -ms-filter: blur(12px);
+    padding: 10px;
+    position: relative;
+}
+
+.textOverImage {
+    color: white;
+    font-size: 20px;
+    position: absolute;
+    visibility: hidden;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgb(0, 0, 0, 0.7);
+    opacity: 0;
+    transition: opacity .5s, visibility .5s;
+}
+
+.blurImageContainer:hover .textOverImage {
+    visibility: visible;
+    opacity: 1;
+}
+
 h1 {
     font-weight: bolder;
     font-size: 2em;
@@ -156,6 +184,7 @@ h2 {
     opacity: 0;
 }
 
+
 @keyframes fade-down {
     0% {
         opacity: 0;
@@ -171,7 +200,7 @@ h2 {
 @keyframes fade-to-right {
     0% {
         opacity: 0;
-        transform: translateX(-220px) scale(0.9);
+        transform: translateX(-180px) scale(0.9);
     }
 
     100% {
@@ -183,7 +212,7 @@ h2 {
 @keyframes fade-to-left {
     0% {
         opacity: 0;
-        transform: translateX(220px) scale(0.9);
+        transform: translateX(180px) scale(0.9);
     }
 
     100% {
@@ -249,10 +278,15 @@ h2 {
         margin-left: 76%;
     }
 
+    .textOverImage {
+        font-size: 15px;
+    }
+
+
     @keyframes fade-to-right {
         0% {
             opacity: 0;
-            transform: translateY(150px) scale(0.9);
+            transform: translateY(100px) scale(0.9);
         }
 
         100% {
@@ -264,7 +298,7 @@ h2 {
     @keyframes fade-to-left {
         0% {
             opacity: 0;
-            transform: translateY(-150px) scale(0.9);
+            transform: translateY(-100px) scale(0.9);
         }
 
         100% {

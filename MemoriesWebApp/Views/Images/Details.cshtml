@@ -69,10 +69,20 @@
     </div>
 </div>
 
-<div class="container col-xxxl-8">
+<div class="container col-xxxl-8 w-100 h-100 d-flex flex-column align-items-center justify-content-center" style="min-height: 80vh;">
     <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
         <div class="col-12 col-sm-12 col-lg-6 fadeToLeftClass">
-            <img src="@Model.Url" class="d-block mx-lg-auto img-fluid" alt="Image" loading="lazy">
+            @if (@Model.IsVisableForUser || User.IsInRole("superuser") || User.IsInRole("admin"))
+            {
+                <img src="@Model.Url" class="d-block mx-lg-auto img-fluid" alt="Image" loading="lazy">
+            }
+            else //Adding blur and text in the middle of an Image
+            {
+                <div class="blurImageContainer position-relative">
+                    <img src="@Model.Url" class="d-block mx-lg-auto img-fluid blurImage" alt="Image" loading="lazy">
+                    <span class="textOverImage fw-bold d-flex container-fluid justify-content-center">Tylko dla upoważnionych</span>
+                </div>
+            }
         </div>
         <div class="col-lg-6 fadeToRightClass">
             <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Szczegółowe informacje o zdjęciu</h1>

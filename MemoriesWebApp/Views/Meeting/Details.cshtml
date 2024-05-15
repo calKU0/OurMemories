@@ -125,7 +125,17 @@
                 <div class="my-3 p-3 d-flex flex-column justify-content-center">
                     <h2 class="display-5" style="text-align:center">@image.Name</h2>
                 </div>
-                <img src="@image.Url" alt="Alternate Text" width=100% height=100% class="rounded-5"></img>
+                @if (image.IsVisableForUser || User.IsInRole("superuser") || User.IsInRole("admin"))
+                {
+                    <img src="@image.Url" alt="Alternate Text" width=100% height=100% class="rounded-5"></img>
+                }
+                else //Adding blur and text in the middle of an Image
+                {
+                    <div class="blurImageContainer position-relative">
+                        <img src="@image.Url" alt="Alternate Text" width=100% height=100% class="rounded-5 blurImage"></img>
+                        <span class="textOverImage fw-bold d-flex container-fluid justify-content-center">Tylko dla upoważnionych</span>
+                    </div>
+                }
             </div>
         </div>
     }
