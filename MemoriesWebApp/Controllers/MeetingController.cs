@@ -69,7 +69,6 @@ namespace MemoriesWebApp.Controllers
 
         // POST: Meeting/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateMeetingViewModel meetingVM)
         {
             if (!(User.IsInRole("admin") || User.IsInRole("superuser")))
