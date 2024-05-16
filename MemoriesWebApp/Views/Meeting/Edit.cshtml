@@ -104,6 +104,7 @@
         </div>
     </div>
     <div class="form-group row pt-3">
+        <img id="imagePreview" style="display:none; max-height: 550px; width: auto;">
         <div class="col-sm-10">
             <a type="button" class="btn btn-outline-secondary" asp-action="Index">Powrót</a>
             <a id="openSaveModalButton" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#saveModal">Zapisz</a>
@@ -116,10 +117,65 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        $('#saveModal').on('show.bs.modal', function (e) {
-            $('#confirmSaveButton').click(function () {
+        let cropper;
+        let croppedBlob;
+
+        document.getElementById('Image').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById('imagePreview');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    cropper = new Cropper(img, {
+                        viewMode: 1,
+                        aspectRatio: 800 / 450,
+                        cropBoxResizable: false,
+                        cropBoxMovable: true,
+                        dragMode: 'move',
+                        ready: function () {
+                            const containerData = cropper.getContainerData();
+                            const aspectRatio = cropper.options.aspectRatio;
+
+                            let cropBoxWidth = 800;
+                            let cropBoxHeight = 450;
+
+
+                            cropper.setCropBoxData({
+                                width: cropBoxWidth,
+                                height: cropBoxHeight
+                            });
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('confirmSaveButton').addEventListener('click', async function () {
+            if (cropper) {
+                const canvas = cropper.getCroppedCanvas({
+                    width: 800,
+                    height: 450
+                });
+                canvas.toBlob(async function (blob) {
+                    croppedBlob = blob;
+                    const fileInput = document.getElementById('Image');
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(new File([croppedBlob], fileInput.files[0].name, { type: fileInput.files[0].type }));
+                    fileInput.files = dataTransfer.files;
+
+                    $('#editForm').submit();
+                });
+            } else {
                 $('#editForm').submit();
-            });
+            }
         });
     </script>
 }
