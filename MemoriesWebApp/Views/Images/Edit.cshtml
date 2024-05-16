@@ -15,7 +15,7 @@
             <div class="modal-body">
                 <div class="row align-items-center justify-content-center p-2">
                     <div class="col-auto">
-                        <svg class="bi mt-2 mb-2" style="color: green" ; width="50" height="50">
+                        <svg class="bi mt-2 mb-2" style="color: green" width="50" height="50">
                             <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                                 <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
@@ -34,7 +34,6 @@
         </div>
     </div>
 </div>
-
 
 <form id="editForm" method="post" class="needs-validation novalidate" asp-action="Edit" enctype="multipart/form-data">
     <div class="form-group row pt-3">
@@ -86,8 +85,9 @@
             <input asp-for="Image" type="file" class="form-control" id="Image">
         </div>
     </div>
-    <div class="form-group row pt-3">
-        <div class="col-sm-10">
+    <div class="form-group row pt-3"> 
+        <img id="imagePreview" style="display:none; max-height: 550px; width: auto;">
+        <div class="col-sm-10 mt-3">
             <form>
                 <input type="button" value="Powrót" class="btn btn-outline-secondary" onclick="history.back()">
             </form>
@@ -101,10 +101,65 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        $('#saveModal').on('show.bs.modal', function (e) {
-            $('#confirmSaveButton').click(function () {
+        let cropper;
+        let croppedBlob;
+
+        document.getElementById('Image').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById('imagePreview');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    cropper = new Cropper(img, {
+                        viewMode: 1,
+                        aspectRatio: 800 / 450, 
+                        cropBoxResizable: false, 
+                        cropBoxMovable: true, 
+                        dragMode: 'move', 
+                        ready: function () {
+                            const containerData = cropper.getContainerData();
+                            const aspectRatio = cropper.options.aspectRatio;
+
+                            let cropBoxWidth = 800;
+                            let cropBoxHeight = 450;
+
+
+                            cropper.setCropBoxData({
+                                width: cropBoxWidth,
+                                height: cropBoxHeight
+                            });
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('confirmSaveButton').addEventListener('click', async function () {
+            if (cropper) {
+                const canvas = cropper.getCroppedCanvas({
+                    width: 800,
+                    height: 450
+                });
+                canvas.toBlob(async function (blob) {
+                    croppedBlob = blob;
+                    const fileInput = document.getElementById('Image');
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(new File([croppedBlob], fileInput.files[0].name, { type: fileInput.files[0].type }));
+                    fileInput.files = dataTransfer.files;
+
+                    $('#editForm').submit();
+                });
+            } else {
                 $('#editForm').submit();
-            });
+            }
         });
     </script>
 }
