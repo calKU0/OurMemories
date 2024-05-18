@@ -27,7 +27,7 @@ namespace MemoriesWebApp.Services
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(file.Name, stream),
-                    Transformation = new Transformation().Height(450).Width(800).Crop("fill").Gravity("face")
+                    Transformation = new Transformation().Height(720).Width(1280).Crop("fill").Gravity("face")
                 };
                 uploadResult = await _cloudinary.UploadAsync(uploadParams);
             }

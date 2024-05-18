@@ -62,7 +62,6 @@ namespace MemoriesWebApp.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateImageViewModel imageVM)
         {
             if (!(User.IsInRole("admin") || User.IsInRole("superuser")))
