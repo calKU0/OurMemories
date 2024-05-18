@@ -135,7 +135,7 @@
 
                     cropper = new Cropper(img, {
                         viewMode: 1,
-                        aspectRatio: 800 / 450,
+                        aspectRatio: 1280 / 720,
                         cropBoxResizable: false,
                         cropBoxMovable: true,
                         dragMode: 'move',
@@ -143,8 +143,8 @@
                             const containerData = cropper.getContainerData();
                             const aspectRatio = cropper.options.aspectRatio;
 
-                            let cropBoxWidth = 800;
-                            let cropBoxHeight = 450;
+                            let cropBoxWidth = 1280;
+                            let cropBoxHeight = 720;
 
 
                             cropper.setCropBoxData({
@@ -161,8 +161,8 @@
         document.getElementById('confirmSaveButton').addEventListener('click', async function () {
             if (cropper) {
                 const canvas = cropper.getCroppedCanvas({
-                    width: 800,
-                    height: 450
+                    width: 1280,
+                    height: 720
                 });
                 canvas.toBlob(async function (blob) {
                     croppedBlob = blob;
