@@ -65,9 +65,24 @@
         </div>
     </div>
     <div class="form-group row pt-3">
-        <label asp-for="MeetingId" class="col-sm-2 col-form-label">Numer spotkania</label>
+        <label class="col-sm-2 col-form-label">Wybierz spotkanie</label>
         <div class="col-sm-10">
-            <select asp-for="MeetingId" class="form-control" id="MeetingId" asp-items="ViewBag.MeetingId"></select>
+            <button id="showMeetingsButton" type="button" class="btn btn-outline-primary" onclick="toggleImages()">Pokaż spotkania</button>
+            <div id="imageSelection" class="row mt-3 image-selection" style="overflow: hidden; max-height: 0;">
+                @foreach (var meeting in ViewBag.Meetings)
+                {
+                    <div class="col-sm-3 mb-3">
+                        <img src="@meeting.ImageUrl" class="img-thumbnail selectable-meeting" style="cursor: pointer;" onclick="selectMeeting('@meeting.Id', '@meeting.ImageUrl')">
+                        <div class="row">
+                            <div class="col text-left">
+                                <strong>@meeting.MeetingCity</strong>
+                            </div>
+                            <div class="col text-end">@meeting.DateStart.ToString("dd/MM/yyyy")</div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <input type="hidden" id="selectedMeetingId" name="MeetingId" value="" />
         </div>
     </div>
     <div class="form-group row pt-3 form-check">
@@ -101,6 +116,45 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+        function toggleImages() {
+            var imageSelection = document.getElementById("imageSelection");
+            var showMeetingsButton = document.getElementById("showMeetingsButton");
+
+            if (imageSelection.style.maxHeight === "0px" || imageSelection.style.maxHeight === "") {
+                // Show meetings
+                imageSelection.style.maxHeight = imageSelection.scrollHeight + "px";
+                showMeetingsButton.textContent = "Ukryj spotkania";
+                showMeetingsButton.classList.remove('btn-outline-primary');
+                showMeetingsButton.classList.add('btn-primary');
+            } else {
+                // Hide meetings
+                imageSelection.style.maxHeight = "0px";
+                showMeetingsButton.textContent = "Pokaż spotkania";
+                showMeetingsButton.classList.remove('btn-primary');
+                showMeetingsButton.classList.add('btn-outline-primary');
+            }
+        }
+
+
+        function selectMeeting(meetingId, imageUrl) {
+            document.getElementById("selectedMeetingId").value = meetingId;
+
+            var meetings = document.querySelectorAll('.selectable-meeting');
+            meetings.forEach(function (meeting) {
+                meeting.classList.remove('selected-meeting');
+            });
+
+            event.target.classList.add('selected-meeting');
+        }
+
+        document.head.insertAdjacentHTML('beforeend', `
+                                            <style>
+                                                .selected-meeting {
+                                                    border: 2px solid #007bff;
+                                                }
+                                            </style>
+                                        `);
+
         let cropper;
         let croppedBlob;
 
