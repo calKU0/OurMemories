@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
     string imageCity = !string.IsNullOrEmpty(Model.City) ? Model.City : Model.Meeting.MeetingCity.ToString();
     string imageDate = Model.Date != default ? Model.Date.ToShortDateString() : Model.Meeting.DateStart.ToShortDateString();
-    string description = Model.Description ?? "opis";
+    string description = Model.Description ?? "Opis zdjęcia";
 }
 <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -85,24 +85,19 @@
             }
         </div>
         <div class="col-lg-3 fadeToRightClass">
-            <h1 class="display-6 fw-bold text-body-emphasis lh-1 mb-3">Informacje o zdjęciu</h1>
-            <div class="row">
-                <div class="col-md-6">
-                    <h3 class="fw-normal text-muted mb-3"><i class="bi bi-card-text"></i> @Model.Name</h3>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <h3 class="fw-normal text-muted mb-3"><i class="bi bi-justify"> </i> @description</h3>
-                </div>
-            </div>
+            <h1 class="display-6 fw-bold lh-1 mb-3">Informacje o zdjęciu</h1>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <h3 class="fw-normal text-muted mb-3"><i class="bi bi-calendar-heart"></i> @imageDate</h3>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <h3 class="fw-normal text-muted mb-3"><i class="bi bi-pin-map"></i> @imageCity</h3>
-                </div>
-            </div>
+            <h3 class="fw-normal mb-3"><i class="bi bi-card-text"></i> @Model.Name</h3>
+            @if (Model.Description == null)
+            {
+                <h3 class="fw-normal text-muted mb-3"><i class="bi bi-justify"> </i> @description</h3>
+            }
+            else
+            {
+                <h3 class="fw-normal mb-3"><i class="bi bi-justify"> </i> @description</h3>
+            }          
+            <h3 class="fw-normal mb-3"><i class="bi bi-calendar-heart"></i> @imageDate</h3>
+            <h3 class="fw-normal mb-3"><i class="bi bi-pin-map"></i> @imageCity</h3>
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                 <a type="button" class="btn btn-outline-secondary px-2" onclick="history.back()">Wróć</a>
