@@ -1,8 +1,10 @@
 ﻿@model IEnumerable<MemoriesWebApp.Models.Image>
 
+
 @{
     ViewData["Title"] = "Index";
 }
+
 <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -134,8 +136,16 @@
                                     }
                                 </div>
                                 <div class="text-muted ">
+                                    @if (imageCity.Length>15)
+                                    {
+                                        imageCity = imageCity.Substring(0, 13) + "...";
+                                    }
                                     <small class="m-0"><i class="bi bi-geo-fill"></i> @imageCity</small>
-                                    <small><i class="bi bi-calendar-heart"></i> @imageDate</small>
+
+                                    @if(!@ViewBag.IsMobileDevice)
+                                    {
+                                        <small><i class="bi bi-calendar-heart"></i> @imageDate</small>
+                                    }                                 
                                 </div>
                             </div>
                         </div>
