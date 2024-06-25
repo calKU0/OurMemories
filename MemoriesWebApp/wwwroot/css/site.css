@@ -184,6 +184,10 @@ h2 {
     opacity: 0;
 }
 
+.image-selection {
+    transition: max-height 0.5s ease-out;
+}
+
 
 @keyframes fade-down {
     0% {
