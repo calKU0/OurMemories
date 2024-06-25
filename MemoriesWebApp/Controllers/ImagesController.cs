@@ -26,6 +26,16 @@ namespace MemoriesWebApp.Controllers
         // GET: Images
         public async Task<IActionResult> Index()
         {
+            var brows = Request.Headers["User-Agent"].ToString();
+            bool isMobileDevice = brows != null && (
+                brows.IndexOf("Mobile", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                brows.Contains("Android") ||
+                brows.Contains("iPhone") ||
+                brows.Contains("Windows Phone")
+            );
+
+            ViewBag.IsMobileDevice = isMobileDevice;
+
             var appDbContext = _context.Images.Include(i => i.Meeting);
             return View(await appDbContext.ToListAsync());
         }
@@ -58,6 +68,12 @@ namespace MemoriesWebApp.Controllers
             }
 
             ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id");
+
+            var meetings = _context.Meetings
+                .Select(m => new { m.Id, m.ImageUrl, m.MeetingCity, m.DateStart })
+                .ToList();
+            ViewBag.Meetings = meetings;
+
             return View();
         }
 
@@ -87,6 +103,12 @@ namespace MemoriesWebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            var meetings = _context.Meetings
+                .Select(m => new { m.Id, m.ImageUrl, m.MeetingCity, m.DateStart })
+                .ToList();
+            ViewBag.Meetings = meetings;
+
             ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id", imageVM.MeetingId);
             return View(imageVM);
         }
@@ -115,6 +137,11 @@ namespace MemoriesWebApp.Controllers
                 IsVisableForUser = image.IsVisableForUser,
                 MeetingId = image.MeetingId
             };
+            var meetings = _context.Meetings
+                .Select(m => new { m.Id, m.ImageUrl, m.MeetingCity, m.DateStart })
+                .ToList();
+            ViewBag.Meetings = meetings;
+
 
             ViewData["MeetingId"] = new SelectList(_context.Meetings, "Id", "Id");
             return View(imageVM);
@@ -159,6 +186,11 @@ namespace MemoriesWebApp.Controllers
 
                 TempData["ShowModal"] = true;
             }
+            var meetings = _context.Meetings
+                .Select(m => new { m.Id, m.ImageUrl, m.MeetingCity, m.DateStart })
+                .ToList();
+            ViewBag.Meetings = meetings;
+
             return RedirectToAction(nameof(Index));
         }
 
