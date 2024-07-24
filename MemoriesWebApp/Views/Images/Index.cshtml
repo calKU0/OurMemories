@@ -3,6 +3,10 @@
 
 @{
     ViewData["Title"] = "Index";
+    var currentSort = ViewBag.CurrentSort as string ?? "MeetingId";
+    var isDescending = currentSort.EndsWith("_desc");
+    var baseSort = isDescending ? currentSort.Replace("_desc", "") : currentSort;
+    var arrowClass = isDescending ? "bi-arrow-down" : "bi-arrow-up";
 }
 
 <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -90,10 +94,27 @@
                 <a asp-controller="Account" asp-action="Login" type="button" class="btn btn-primary my-2">Dodaj nowe zdjęcie</a>
             </p>
         }
+        <div class="row mt-5 justify-content-end">
+            <div class="col-md-6">
+                <form id="sortForm" asp-action="Index" method="get">
+                    <div class="input-group">
+                        <select id="sortOrder" name="sortOrder" class="form-select">
+                            <option value="MeetingId">Spotkanie</option>
+                            <option value="Date">Data</option>
+                            <option value="City">Miejscowość</option>
+                        </select>
+                        <button type="button" id="sortDirectionButton" class="btn btn-outline-secondary" onclick="toggleSortDirection()">
+                            <i id="sortDirectionIcon" class="bi @arrowClass"></i>
+                        </button>
+                    </div>
+                    <input type="hidden" id="sortDirection" name="sortDirection" value="@currentSort" />
+                </form>
+            </div>
+        </div>
     </div>
 </section>
 
-<div class="album py-5">
+<div class="album py-3">
     <div class="container">
         <div class="row">
             @foreach (var image in Model)
@@ -158,9 +179,55 @@
 
 @section Scripts {
     <script>
-       $('.deleteButton').click(function () {
+        $('.deleteButton').click(function () {
             var imageId = $(this).data('id');
             $('#imageId').val(imageId);
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var currentSort = '@baseSort';
+            var isDescending = '@isDescending'.toLowerCase() === 'true';
+
+            document.getElementById('sortOrder').value = currentSort;
+            var sortDirectionIcon = document.getElementById('sortDirectionIcon');
+            if (isDescending) {
+                sortDirectionIcon.classList.remove('bi-arrow-up');
+                sortDirectionIcon.classList.add('bi-arrow-down');
+            } else {
+                sortDirectionIcon.classList.remove('bi-arrow-down');
+                sortDirectionIcon.classList.add('bi-arrow-up');
+            }
+        });
+
+        function toggleSortDirection() {
+            var sortOrder = document.getElementById('sortOrder').value;
+            var sortDirectionInput = document.getElementById('sortDirection');
+            var sortDirectionIcon = document.getElementById('sortDirectionIcon');
+
+            if (sortDirectionIcon.classList.contains('bi-arrow-up')) {
+                sortDirectionInput.value = sortOrder + '_desc';
+                sortDirectionIcon.classList.remove('bi-arrow-up');
+                sortDirectionIcon.classList.add('bi-arrow-down');
+            } else {
+                sortDirectionInput.value = sortOrder;
+                sortDirectionIcon.classList.remove('bi-arrow-down');
+                sortDirectionIcon.classList.add('bi-arrow-up');
+            }
+
+            document.getElementById('sortForm').submit();
+        }
+
+        document.getElementById("sortOrder").addEventListener("change", function () {
+            var sortDirectionInput = document.getElementById("sortDirection");
+            var sortDirectionIcon = document.getElementById('sortDirectionIcon');
+
+            if (sortDirectionIcon.classList.contains('bi-arrow-down')) {
+                sortDirectionInput.value = this.value + '_desc';
+            } else {
+                sortDirectionInput.value = this.value;
+            }
+            document.getElementById("sortForm").submit();
         });
     </script>
 }

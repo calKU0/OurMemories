@@ -24,7 +24,7 @@ namespace MemoriesWebApp.Controllers
         }
 
         // GET: Images
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string sortDirection)
         {
             var brows = Request.Headers["User-Agent"].ToString();
             bool isMobileDevice = brows != null && (
@@ -36,8 +36,51 @@ namespace MemoriesWebApp.Controllers
 
             ViewBag.IsMobileDevice = isMobileDevice;
 
-            var appDbContext = _context.Images.Include(i => i.Meeting);
-            return View(await appDbContext.ToListAsync());
+            ViewBag.CurrentSort = sortDirection;
+            ViewBag.SortDirection = sortDirection;
+
+            var images = from i in _context.Images select i;
+
+            // Apply sorting based on the direction
+            if (!string.IsNullOrEmpty(sortDirection))
+            {
+                switch (sortDirection)
+                {
+                    case "Date_desc":
+                        images = images.OrderByDescending(i => i.Date);
+                        break;
+                    case "City_desc":
+                        images = images.OrderByDescending(i => i.City);
+                        break;
+                    case "MeetingId_desc":
+                        images = images.OrderByDescending(i => i.MeetingId);
+                        break;
+                    default:
+                        if (sortOrder == "Date")
+                            images = images.OrderBy(i => i.Date);
+                        else if (sortOrder == "City")
+                            images = images.OrderBy(i => i.City);
+                        else if (sortOrder == "MeetingId")
+                            images = images.OrderBy(i => i.MeetingId);
+                        else
+                            images = images.OrderBy(i => i.MeetingId); // Default sorting
+                        break;
+                }
+            }
+            else
+            {
+                // Default sorting when sortDirection is not provided
+                if (sortOrder == "Date")
+                    images = images.OrderBy(i => i.Date);
+                else if (sortOrder == "City")
+                    images = images.OrderBy(i => i.City);
+                else if (sortOrder == "MeetingId")
+                    images = images.OrderBy(i => i.MeetingId);
+                else
+                    images = images.OrderBy(i => i.MeetingId); // Default sorting
+            }
+
+            return View(await images.ToListAsync());
         }
 
         // GET: Images/Details/5
