@@ -120,7 +120,7 @@
             @foreach (var image in Model)
             {
                 string imageCity = !string.IsNullOrEmpty(image.City) ? image.City : image.Meeting.MeetingCity.ToString();
-                string imageDate = image.Date != default ? image.Date.ToShortDateString() : image.Meeting.DateStart.ToShortDateString();
+                string imageDate = image.Date != default ? image.Date.ToString("dd/MM/yyyy") : image.Meeting.DateStart.ToString("dd/MM/yyyy");
 
                 <div class="col-md-4 fadeDownClass">
                     <div class="card mb-4 shadow-sm">
