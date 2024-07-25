@@ -9,6 +9,7 @@ using MemoriesWebApp.Data;
 using MemoriesWebApp.Models;
 using MemoriesWebApp.Interfaces;
 using MemoriesWebApp.ViewModels;
+using System.Diagnostics;
 
 namespace MemoriesWebApp.Controllers
 {
@@ -22,6 +23,7 @@ namespace MemoriesWebApp.Controllers
             _context = context;
             this._photoService = photoService;
         }
+
 
         // GET: Images
         public async Task<IActionResult> Index(string sortOrder, string sortDirection)
@@ -39,7 +41,7 @@ namespace MemoriesWebApp.Controllers
             ViewBag.CurrentSort = sortDirection;
             ViewBag.SortDirection = sortDirection;
 
-            var images = from i in _context.Images select i;
+            var images = from i in _context.Images.Include(i => i.Meeting) select i;
 
             // Apply sorting based on the direction
             if (!string.IsNullOrEmpty(sortDirection))
@@ -84,22 +86,38 @@ namespace MemoriesWebApp.Controllers
         }
 
         // GET: Images/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var image = await _context.Images
-                .Include(i => i.Meeting)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var image = await _context.Images.FindAsync(id);
             if (image == null)
             {
                 return NotFound();
             }
 
-            return View(image);
+            var brows = Request.Headers["User-Agent"].ToString();
+            bool isMobileDevice = brows != null && (
+                brows.IndexOf("Mobile", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                brows.Contains("Android") ||
+                brows.Contains("iPhone") ||
+                brows.Contains("Windows Phone")
+            );
+
+            ViewBag.IsMobileDevice = isMobileDevice;
+
+            var allImageIds = await _context.Images.Select(i => i.Id).ToListAsync();
+            int currentIndex = allImageIds.IndexOf(id);
+
+            int? previousId = currentIndex > 0 ? allImageIds[currentIndex - 1] : (int?)null;
+            int? nextId = currentIndex < allImageIds.Count - 1 ? allImageIds[currentIndex + 1] : (int?)null;
+
+            var viewModel = new ImageDetailsViewModel
+            {
+                Image = image,
+                PreviousId = previousId,
+                NextId = nextId
+            };
+
+            return View(viewModel);
         }
 
         // GET: Images/Create

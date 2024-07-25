@@ -1,10 +1,11 @@
-﻿@model MemoriesWebApp.Models.Image
+﻿@model MemoriesWebApp.ViewModels.ImageDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
-    string imageCity = !string.IsNullOrEmpty(Model.City) ? Model.City : Model.Meeting.MeetingCity.ToString();
-    string imageDate = Model.Date != default ? Model.Date.ToShortDateString() : Model.Meeting.DateStart.ToShortDateString();
-    string description = Model.Description ?? "Opis zdjęcia";
+    string imageCity = !string.IsNullOrEmpty(Model.Image.City) ? Model.Image.City : Model.Image.Meeting.MeetingCity.ToString();
+    string imageDate = Model.Image.Date != default ? Model.Image.Date.ToShortDateString() : Model.Image.Meeting.DateStart.ToShortDateString();
+    string description = Model.Image.Description ?? "Opis zdjęcia";
+    int previousImage = Model.Image.Id - 1;
 }
 <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -30,7 +31,7 @@
             </div>
             <div class="modal-footer">
                 <form id="deleteForm" asp-action="Delete" method="post">
-                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Image.Id" />
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Zamknij</button>
                     <button type="submit" class="btn btn-danger">Usuń</button>
                 </form>
@@ -69,90 +70,81 @@
     </div>
 </div>
 
-<div class="container-fluid col-xxxl-8 w-100 h-100 d-flex flex-column align-items-center justify-content-center" style="min-height: 80vh;">
-    <div class="row align-items-center g-5 py-5">
+<div class="container-fluid col-xxxl-8 w-100 h-100 d-flex flex-column" style="min-height: 80vh;">
+    <div class="row g-5 py-4 position-relative">
         <div class="col-12 col-sm-12 col-lg-9 fadeToLeftClass">
-            @if (@Model.IsVisableForUser || User.IsInRole("superuser") || User.IsInRole("admin"))
+            @if (@ViewBag.IsMobileDevice)
+            {   <div class="mb-3">
+                    <a type="button" class="btn btn-outline-light px-3" asp-controller="Images" asp-action="Index"><i class="bi bi-box-arrow-left"></i> Wróć</a>
+                </div>
+            }
+            @if (@Model.Image.IsVisableForUser || User.IsInRole("superuser") || User.IsInRole("admin"))
             {
-                <img src="@Model.Url" class="d-block mx-lg-auto img-fluid" alt="Image" loading="lazy">
+                <img src="@Model.Image.Url" class="d-block mx-lg-auto img-fluid" alt="Image" loading="lazy">
             }
             else // Adding blur and text in the middle of an Image
             {
                 <div class="blurImageContainer position-relative">
-                    <img src="@Model.Url" class="d-block mx-lg-auto img-fluid blurImage" alt="Image" loading="lazy">
+                    <img src="@Model.Image.Url" class="d-block mx-lg-auto img-fluid blurImage" alt="Image" loading="lazy">
                     <span class="textOverImage fw-bold d-flex container-fluid justify-content-center">Tylko dla upoważnionych</span>
                 </div>
             }
         </div>
-        <div class="col-lg-3 fadeToRightClass">
+        <div class="fadeToRightClass col-lg-3 d-flex flex-column justify-content-center">
+            <div class="position-absolute top-0 end-0 p-3 py-0">
+                @if (!@ViewBag.IsMobileDevice)
+                {
+                    <a type="button" class="btn btn-outline-light px-3" asp-controller="Images" asp-action="Index"><i class="bi bi-box-arrow-left"></i> Wróć</a>
+                }
+            </div>
             <h1 class="display-6 fw-bold lh-1 mb-3">Informacje o zdjęciu</h1>
 
-            <h3 class="fw-normal mb-3"><i class="bi bi-card-text"></i> @Model.Name</h3>
-            @if (Model.Description == null)
+            <h3 class="fw-normal mb-3"><i class="bi bi-card-text"></i> @Model.Image.Name</h3>
+            @if (Model.Image.Description == null)
             {
                 <h3 class="fw-normal text-muted mb-3"><i class="bi bi-justify"> </i> @description</h3>
             }
             else
             {
                 <h3 class="fw-normal mb-3"><i class="bi bi-justify"> </i> @description</h3>
-            }          
+            }
             <h3 class="fw-normal mb-3"><i class="bi bi-calendar-heart"></i> @imageDate</h3>
             <h3 class="fw-normal mb-3"><i class="bi bi-pin-map"></i> @imageCity</h3>
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                <a type="button" class="btn btn-outline-secondary px-2" onclick="history.back()">Wróć</a>
-                <a type="button" class="btn btn-success px-3" asp-controller="Meeting" asp-action="Details" asp-route-id=@Model.MeetingId>Album ze spotkania</a>
+                @if (Model.PreviousId.HasValue)
+                {
+                    <a type="button" class="btn btn-outline-primary px-3" asp-controller="Images" asp-action="Details" asp-route-id="@Model.PreviousId.Value">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+                        </svg>
+                    </a>
+                }
+                <a type="button" class="btn btn-outline-success px-4" asp-controller="Meeting" asp-action="Details" asp-route-id=@Model.Image.MeetingId>Album</a>
                 @if (User.Identity.IsAuthenticated && (User.IsInRole("admin") || User.IsInRole("superuser")))
                 {
-                    <a type="button" class="btn btn-primary px-3" asp-action="Edit" asp-route-id=@Model.Id>Edytuj</a>
-                    <a type="button" class="btn btn-danger px-2" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="Id">Usuń</a>
+                    <a type="button" class="btn btn-outline-primary px-4" asp-action="Edit" asp-route-id=@Model.Image.Id>Edytuj</a>
+                    <a type="button" class="btn btn-outline-danger px-4" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="Id">Usuń</a>
                 }
                 else if (User.Identity.IsAuthenticated && !(User.IsInRole("admin") || User.IsInRole("superuser")))
                 {
-                    <button type="button" class="btn btn-primary px-3" data-bs-toggle="modal" data-bs-target="#permissionsModal">Edytuj</button>
-                    <button type="button" class="btn btn-danger  px-3" data-bs-toggle="modal" data-bs-target="#permissionsModal">Usuń</button>
+                    <button type="button" class="btn btn-outline-primary px-4" data-bs-toggle="modal" data-bs-target="#permissionsModal">Edytuj</button>
+                    <button type="button" class="btn btn-outline-danger px-4" data-bs-toggle="modal" data-bs-target="#permissionsModal">Usuń</button>
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login" type="button" class="btn btn-primary px-3">Edytuj</a>
-                    <a asp-controller="Account" asp-action="Login" type="button" class="btn btn-danger px-3">Usuń</a>
+                    <a asp-controller="Account" asp-action="Login" type="button" class="btn btn-outline-primary px-4">Edytuj</a>
+                    <a asp-controller="Account" asp-action="Login" type="button" class="btn btn-outline-danger px-4">Usuń</a>
+                }
+                @if (Model.NextId.HasValue)
+                {
+                    <a type="button" class="btn btn-outline-primary px-3" asp-controller="Images" asp-action="Details" asp-route-id="@Model.NextId.Value">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8" />
+                        </svg>
+                    </a>
                 }
             </div>
         </div>
     </div>
 </div>
-
-
-
-<!-- <div class="position-relative overflow-hidden p-3 p-md-3 m-md-3 text-center bg-body-tertiary">
-    <div class="col-md-5 p-lg-5 mx-auto my-4">
-        <h1 class="display-3 fw-bold mb-5 ">Informacje o zdjęciu</h1>
-        <div class="row">
-            <div class="row">
-                <div class="col-md-6">
-                    <h3 class="fw-normal text-muted mb-3"><i class="bi bi-card-text"></i> @Model.Name</h3>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="fw-normal text-muted mb-3"><i class="bi bi-justify"> </i> @description</h3>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <h3 class="fw-normal text-muted mb-3"><i class="bi bi-calendar-heart"></i> @imageDate</h3>
-            </div>
-            <div class="col-md-6">
-                <h3 class="fw-normal text-muted mb-3"><i class="bi bi-pin-map"></i> @imageCity</h3>
-            </div>
-        </div>
-    </div>
-    <div class="d-flex gap-4 justify-content-center lead fw-normal">
-        <a class="btn btn-outline-secondary rounded-pill px-5 me-1 btn-lg" type="button" onclick="history.back()">Wróć</a>
-        <a class="btn btn-success rounded-pill px-5 me-1 btn-lg" type="button" asp-controller="Meeting" asp-action="Details" asp-route-id=@Model.MeetingId>Album ze spotkania</a>
-        <a class="btn btn-primary rounded-pill px-5 me-1 btn-lg" type="button" asp-action="Edit" asp-route-id=@Model.Id>Edytuj</a>
-        <a type="button" class="btn btn-danger rounded-pill px-5 me-1 btn-lg" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="Id">Usuń</a>
-    </div>
-</div>
- -->
-<!--
-TODO: Make an Add button witch adds a new picture
-< class="btn btn-success rounded-pill px-2.5 me-1" type="button" asp-action="Add" asp-route-id="@Model.Id">Dodaj zdjęcie</a>
--->

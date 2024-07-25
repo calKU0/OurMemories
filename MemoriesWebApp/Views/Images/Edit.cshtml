@@ -1,7 +1,29 @@
 ﻿@model MemoriesWebApp.ViewModels.EditImageViewModel
 
+@functions {
+    public static string ToRoman(int number)
+    {
+        if (number < 1) return string.Empty;
+        if (number >= 1000) return "M" + ToRoman(number - 1000);
+        if (number >= 900) return "CM" + ToRoman(number - 900);
+        if (number >= 500) return "D" + ToRoman(number - 500);
+        if (number >= 400) return "CD" + ToRoman(number - 400);
+        if (number >= 100) return "C" + ToRoman(number - 100);
+        if (number >= 90) return "XC" + ToRoman(number - 90);
+        if (number >= 50) return "L" + ToRoman(number - 50);
+        if (number >= 40) return "XL" + ToRoman(number - 40);
+        if (number >= 10) return "X" + ToRoman(number - 10);
+        if (number >= 9) return "IX" + ToRoman(number - 9);
+        if (number >= 5) return "V" + ToRoman(number - 5);
+        if (number >= 4) return "IV" + ToRoman(number - 4);
+        if (number >= 1) return "I" + ToRoman(number - 1);
+        else return "";
+    }
+}
+
 @{
     ViewData["Title"] = "Edit";
+    int i = 1;
 }
 
 <!-- Modal for confirmation saving -->
@@ -69,17 +91,21 @@
         <div class="col-sm-10">
             <button id="showMeetingsButton" type="button" class="btn btn-outline-primary" onclick="toggleImages()">Pokaż spotkania</button>
             <div id="imageSelection" class="row mt-3 image-selection" style="overflow: hidden; max-height: 0;">
+                
                 @foreach (var meeting in ViewBag.Meetings)
                 {
                     <div class="col-sm-3 mb-3">
                         <img src="@meeting.ImageUrl" class="img-thumbnail selectable-meeting" style="cursor: pointer;" onclick="selectMeeting('@meeting.Id', '@meeting.ImageUrl')">
                         <div class="row">
                             <div class="col text-left">
-                                <strong>@meeting.MeetingCity</strong>
+                                <strong>
+                                    @ToRoman(i). @meeting.MeetingCity
+                                </strong>
                             </div>
                             <div class="col text-end">@meeting.DateStart.ToString("dd/MM/yyyy")</div>
                         </div>
                     </div>
+                    i++;
                 }
             </div>
             <input type="hidden" id="selectedMeetingId" name="MeetingId" value="" />

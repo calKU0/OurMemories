@@ -1,4 +1,5 @@
 ﻿using MemoriesWebApp.Data.Enum;
+using System.Diagnostics;
 
 namespace MemoriesWebApp.ViewModels
 {
