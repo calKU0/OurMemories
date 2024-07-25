@@ -1,4 +1,6 @@
-﻿namespace MemoriesWebApp.ViewModels
+﻿using System.Diagnostics;
+
+namespace MemoriesWebApp.ViewModels
 {
     public class EditImageViewModel
     {
