@@ -7,6 +7,7 @@
     var isDescending = currentSort.EndsWith("_desc");
     var baseSort = isDescending ? currentSort.Replace("_desc", "") : currentSort;
     var arrowClass = isDescending ? "bi-arrow-down" : "bi-arrow-up";
+    var pclass = isDescending ? "M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5" : "M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1";
 }
 
 <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -104,7 +105,11 @@
                             <option value="City">Miejscowość</option>
                         </select>
                         <button type="button" id="sortDirectionButton" class="btn btn-outline-secondary" onclick="toggleSortDirection()">
-                            <i id="sortDirectionIcon" class="bi @arrowClass"></i>
+                            <!--<i id="sortDirectionIcon" class="bi @arrowClass"></i>-->
+
+                            <svg id="sortDirectionIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi @arrowClass" viewBox="0 0 16 16">
+                                <path id ="sortDirectionP" fill-rule="evenodd" d="@pclass" />
+                            </svg>
                         </button>
                     </div>
                     <input type="hidden" id="sortDirection" name="sortDirection" value="@currentSort" />
@@ -191,13 +196,7 @@
 
             document.getElementById('sortOrder').value = currentSort;
             var sortDirectionIcon = document.getElementById('sortDirectionIcon');
-            if (isDescending) {
-                sortDirectionIcon.classList.remove('bi-arrow-up');
-                sortDirectionIcon.classList.add('bi-arrow-down');
-            } else {
-                sortDirectionIcon.classList.remove('bi-arrow-down');
-                sortDirectionIcon.classList.add('bi-arrow-up');
-            }
+            var sortDirectionP = document.getElementById('sortDirectionP');
         });
 
         function toggleSortDirection() {

@@ -72,6 +72,9 @@
 
 <div class="position-relative overflow-hidden p-3 p-md-3 m-md-3 text-center bg-body-tertiary">
     <div class="col-md-5 p-lg-5 mx-auto my-4">
+        <div class="position-absolute top-0 end-0 p-3">
+            <a type="button" class="btn btn-outline-light px-3" onclick="history.back()"><i class="bi bi-box-arrow-left"></i> Wróć</a>
+        </div>
         <h1 class="display-3 fw-bold mb-5 ">Album ze spotkania</h1>
         <div class="row">
             <div class="row">
@@ -90,7 +93,6 @@
             </div>
         </div>
         <div class="d-inline gap-3 justify-content-center lead fw-normal">
-            <a class="btn btn-outline-secondary rounded-pill px-5 me-1 btn-lg mt-3 btn-block" type="button" asp-action="Index">Wróć</a>
 
             @if (User.Identity.IsAuthenticated && (User.IsInRole("admin") || User.IsInRole("superuser")))
             {
@@ -111,9 +113,6 @@
                 <a asp-controller="Account" asp-action="Login" type="button" class="btn btn-danger rounded-pill px-4 me-1 btn-lg mt-3">Usuń</a>
             }
 
-            <!--
-            TODO: Make an Add button witch adds a new picture
-            -->
         </div>
     </div>
 </div>
