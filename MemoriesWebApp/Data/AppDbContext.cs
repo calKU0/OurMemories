@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using MemoriesWebApp.ViewModels;
 using MemoriesWebApp.Data.Enum;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel;
+using System.Data;
 
 namespace MemoriesWebApp.Data
 {
@@ -14,9 +17,10 @@ namespace MemoriesWebApp.Data
         }
         public DbSet<Meeting> Meetings { get; set; }
         public DbSet<Image> Images { get; set; }
-        public List<StatisticsViewModel> GetStatistics()
+        public DbSet<ImportantDate> ImportantDates { get; set; }
+        public StatisticsViewModel GetStatistics()
         {
-            var statistics = new List<StatisticsViewModel>();
+            var statistics = new StatisticsViewModel();
 
             using (var connection = this.Database.GetDbConnection())
             {
@@ -52,8 +56,11 @@ namespace MemoriesWebApp.Data
                             timeSpent.Add(new MeetingTimeSpent
                             {
                                 MeetingId = reader.GetInt32(0),
-                                Days = reader.GetInt32(1),
-                                Hours = reader.GetInt32(2),
+                                Date = reader.GetDateTime(1),
+                                MeetingCity = (MeetingCity)reader.GetInt32(2),
+                                ImageUrl = reader.GetString(3),
+                                Days = reader.GetInt32(4),
+                                Hours = reader.GetInt32(5),
                             });
                         }
                         reader.NextResult();
@@ -84,15 +91,32 @@ namespace MemoriesWebApp.Data
                             picturesTaken.Add(new PicturesTakenPerMeeting
                             {
                                 MeetingId = reader.GetInt32(0),
-                                PicturesTaken = reader.GetInt32(1),
+                                MeetingDate = reader.GetDateTime(1),
+                                MeetingCity = (MeetingCity)reader.GetInt32(2),
+                                ImageUrl = reader.GetString(3),
+                                PicturesTaken = reader.GetInt32(4)
                             });
                         }
-                        reader.NextResult(); 
+                        reader.NextResult();
+
+                        // ImportantDates
+                        var daysPassed = new List<DayPassed>();
+                        while (reader.Read())
+                        {
+                            daysPassed.Add(new DayPassed
+                            {
+                                Title = reader.GetString(0),
+                                Description = reader.IsDBNull(1) ? null : reader.GetString(1),
+                                Date = reader.GetDateTime(2),
+                                DaysPassed = reader.GetInt32(3)
+                            });
+                        }
+                        reader.NextResult();
 
                         // Average Statistics
                         if (reader.Read())
                         {
-                            statistics.Add(new StatisticsViewModel
+                            statistics = new StatisticsViewModel
                             {
                                 AvgMeetingTime = reader.GetDecimal(0),
                                 AvgPicturesTaken = reader.GetDecimal(1),
@@ -100,8 +124,9 @@ namespace MemoriesWebApp.Data
                                 Meetings = meetings,
                                 TimeSpent = timeSpent,
                                 Images = images,
-                                PicturesTakenPerMeeting = picturesTaken
-                            });
+                                PicturesTakenPerMeeting = picturesTaken,
+                                DaysPassed = daysPassed
+                            };
                         }
                     }
                 }
