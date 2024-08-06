@@ -1,9 +1,9 @@
 ﻿@model MemoriesWebApp.ViewModels.ImageDetailsViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Szczegóły zdjęcia";
     string imageCity = !string.IsNullOrEmpty(Model.Image.City) ? Model.Image.City : Model.Image.Meeting.MeetingCity.ToString();
-    string imageDate = Model.Image.Date != default ? Model.Image.Date.ToShortDateString() : Model.Image.Meeting.DateStart.ToShortDateString();
+    string imageDate = Model.Image.Date != default ? Model.Image.Date.ToString("dd.MM.yyyy") : Model.Image.Meeting.DateStart.ToString("dd.MM.yyyy");
     string description = Model.Image.Description ?? "Opis zdjęcia";
     int previousImage = Model.Image.Id - 1;
 }

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<MemoriesWebApp.Models.Meeting>
 
 @{
-    ViewData["Title"] = "Meetings";
+    ViewData["Title"] = "Spotkania";
 }
 <!-- Modal for showing information about too low permissions -->
 <div class="modal fade" id="permissionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="permissionsModalLabel" aria-hidden="true">
@@ -61,7 +61,7 @@
                             </div>
                             <div class="text-muted">
                                 <i class="bi bi-geo-fill"></i><medium>@item.MeetingCity</medium>&nbsp;
-                                <i class="bi bi-calendar3"></i><medium> @item.DateStart.ToString("dd/MM/yyyy")</medium>
+                                <i class="bi bi-calendar3"></i><medium> @item.DateStart.ToString("dd.MM.yyyy")</medium>
                             </div>
                         </div>
                     </div>

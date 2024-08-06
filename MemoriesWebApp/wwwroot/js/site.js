@@ -13,7 +13,6 @@ function updateClock() {
     const displayHours = (hours === 0) ? 12 : hours;
 
     const timeRemaining = endDate - now;
-    console.log(endDateValue);
 
     const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
     const hoursRemaining = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -96,7 +95,7 @@ function updateProgressBar(progress) {
 }
 
 function formatDate(date) {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    const options = { day: 'numeric', month: 'numeric', year: 'numeric'};
     return date.toLocaleDateString('pl-PL', options);
 }
 
