@@ -68,6 +68,41 @@ namespace MemoriesWebApp.Data
             }
         }
 
+        public static void SeedImportantDates(IApplicationBuilder applicationBuilder)
+        {
+            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
+
+                context.Database.EnsureCreated();
+
+                if (!context.ImportantDates.Any())
+                {
+                    context.ImportantDates.AddRange(new List<ImportantDate>()
+                    {
+                        new ImportantDate()
+                        {
+                            Title = "Pierwsze spotkanie IF",
+                            Description = "Na Twitchu",
+                            Date = DateTime.ParseExact("13.10.2023 19:00:00", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)
+                        },
+                        new ImportantDate()
+                        {
+                            Title = "Pierwsze spotkanie IRL",
+                            Description = "Na Gdyni Głównej",
+                            Date = DateTime.ParseExact("08.03.2024 08:00:00", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)
+                        },
+                        new ImportantDate()
+                        {
+                            Title = "Pierwszy pocałunek",
+                            Date = DateTime.ParseExact("10.03.2024 13:00:00", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture)
+                        }
+                    });
+                    context.SaveChanges();
+                }
+            }
+        }
+
         public static async Task SeedRolesAsync(IApplicationBuilder applicationBuilder)
         {
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
