@@ -1,7 +1,7 @@
 ﻿@model MemoriesWebApp.Models.Meeting
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Szczegóły spotkania";
     var images = ViewBag.Images as List<MemoriesWebApp.Models.Image>;
     TimeSpan timeDifference = Model.DateEnd - Model.DateStart;
     string timeDifferenceString = $"{timeDifference.Days} dni {timeDifference.Hours} godzin";

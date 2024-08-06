@@ -2,7 +2,7 @@
 
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Album";
     var currentSort = ViewBag.CurrentSort as string ?? "MeetingId";
     var isDescending = currentSort.EndsWith("_desc");
     var baseSort = isDescending ? currentSort.Replace("_desc", "") : currentSort;
@@ -125,7 +125,7 @@
             @foreach (var image in Model)
             {
                 string imageCity = !string.IsNullOrEmpty(image.City) ? image.City : image.Meeting.MeetingCity.ToString();
-                string imageDate = image.Date != default ? image.Date.ToString("dd/MM/yyyy") : image.Meeting.DateStart.ToString("dd/MM/yyyy");
+                string imageDate = image.Date != default ? image.Date.ToString("dd.MM.yyyy") : image.Meeting.DateStart.ToString("dd.MM.yyyy");
 
                 <div class="col-md-4 fadeDownClass">
                     <div class="card mb-4 shadow-sm">
