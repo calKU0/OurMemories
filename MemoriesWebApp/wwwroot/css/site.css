@@ -219,7 +219,17 @@ thead tr:nth-child(1) th {
     top: 0;
     z-index: 10;
 }
+.text-left {
+    text-align: left;
+}
 
+.text-right {
+    text-align: right;
+}
+
+tfoot th, tfoot td {
+    vertical-align: middle; /* Ensures vertical centering */
+}
 
 @keyframes fade-down {
     0% {
