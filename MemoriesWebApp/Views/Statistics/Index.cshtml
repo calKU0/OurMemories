@@ -1,4 +1,6 @@
 ﻿@model MemoriesWebApp.ViewModels.StatisticsViewModel
+@using MemoriesWebApp.Helpers
+
 @{
 
     var daysSpent = Model.TimeSpent.Sum(x => x.Days);
@@ -10,22 +12,23 @@
     string avgTimeSpent;
     string sumTimeSpent;
 
-    if (ViewBag.IsMobileDevice)
-    {
-        lastMeetingTime = Math.Floor((Model.Meetings[1].DateEnd - Model.Meetings[1].DateStart).TotalDays).ToString() + "d " + ((Model.Meetings[1].DateEnd - Model.Meetings[1].DateStart).TotalHours - Math.Floor(((Model.Meetings[1].DateEnd - Model.Meetings[1].DateStart).TotalDays) * 24)).ToString() + "h";
-        firstMeetingTime = Math.Floor((Model.Meetings[0].DateEnd - Model.Meetings[0].DateStart).TotalDays).ToString() + "d " + ((Model.Meetings[0].DateEnd - Model.Meetings[0].DateStart).TotalHours - Math.Floor(((Model.Meetings[0].DateEnd - Model.Meetings[0].DateStart).TotalDays) * 24)).ToString() + "h";
-        longestMeetingTime = Math.Floor((Model.Meetings[2].DateEnd - Model.Meetings[2].DateStart).TotalDays).ToString() + "d " + ((Model.Meetings[2].DateEnd - Model.Meetings[2].DateStart).TotalHours - Math.Floor(((Model.Meetings[2].DateEnd - Model.Meetings[2].DateStart).TotalDays) * 24)).ToString() + "h";
-        avgTimeSpent = (Math.Floor(Model.AvgMeetingTime / 24)).ToString() + "d " + (Math.Round(Model.AvgMeetingTime) - Math.Floor(Model.AvgMeetingTime / 24) * 24).ToString() + "h";
-        sumTimeSpent = daysSpent + Math.Floor((decimal)hoursSpent / 24) + "d " + hoursSpent % 24 + "h";
-    }
-    else
-    {
-        lastMeetingTime = Math.Floor((Model.Meetings[1].DateEnd - Model.Meetings[1].DateStart).TotalDays).ToString() + " dni " + ((Model.Meetings[1].DateEnd - Model.Meetings[1].DateStart).TotalHours - Math.Floor(((Model.Meetings[1].DateEnd - Model.Meetings[1].DateStart).TotalDays) * 24)).ToString() + " godzin";
-        firstMeetingTime = Math.Floor((Model.Meetings[0].DateEnd - Model.Meetings[0].DateStart).TotalDays).ToString() + " dni " + ((Model.Meetings[0].DateEnd - Model.Meetings[0].DateStart).TotalHours - Math.Floor(((Model.Meetings[0].DateEnd - Model.Meetings[0].DateStart).TotalDays) * 24)).ToString() + " godzin";
-        longestMeetingTime = Math.Floor((Model.Meetings[2].DateEnd - Model.Meetings[2].DateStart).TotalDays).ToString() + " dni " + ((Model.Meetings[2].DateEnd - Model.Meetings[2].DateStart).TotalHours - Math.Floor(((Model.Meetings[2].DateEnd - Model.Meetings[2].DateStart).TotalDays) * 24)).ToString() + " godzin";
-        avgTimeSpent = (Math.Floor(Model.AvgMeetingTime / 24)).ToString() + " dni " + (Math.Round(Model.AvgMeetingTime) - Math.Floor(Model.AvgMeetingTime / 24) * 24).ToString() + " godzin";
-        sumTimeSpent = daysSpent + Math.Floor((decimal)hoursSpent / 24) + " dni " + hoursSpent % 24 + " godzin";
-    }
+    TimeSpan lastMeetingDuration = Model.Meetings[2].DateEnd - Model.Meetings[2].DateStart;
+    TimeSpan firstMeetingDuration = Model.Meetings[0].DateEnd - Model.Meetings[0].DateStart;
+    TimeSpan longestMeetingDuration = Model.Meetings[1].DateEnd - Model.Meetings[1].DateStart;
+    TimeSpan avgMeetingDuration = TimeSpan.FromHours(Convert.ToDouble(Model.AvgMeetingTime));
+
+    lastMeetingTime = DateHelper.FormatMeetingTime(lastMeetingDuration, ViewBag.IsMobileDevice);
+    firstMeetingTime = DateHelper.FormatMeetingTime(firstMeetingDuration, ViewBag.IsMobileDevice);
+    longestMeetingTime = DateHelper.FormatMeetingTime(longestMeetingDuration, ViewBag.IsMobileDevice);
+
+    int avgDays = (int)Math.Floor(Model.AvgMeetingTime / 24);
+    int avgHours = (int)(Math.Round(Model.AvgMeetingTime) - avgDays * 24);
+    
+    int totalDaysSpent = daysSpent + (int)Math.Floor((decimal)hoursSpent / 24);
+    int remainingHoursSpent = hoursSpent % 24;
+
+    avgTimeSpent = $"{avgDays}{Inflections.GetPolishInflection(avgDays, "day", ViewBag.IsMobileDevice)} {avgHours} {Inflections.GetPolishInflection(avgHours, "hour", ViewBag.IsMobileDevice)}";
+    sumTimeSpent = $"{totalDaysSpent}{Inflections.GetPolishInflection(totalDaysSpent, "day", ViewBag.IsMobileDevice)} {remainingHoursSpent} {Inflections.GetPolishInflection(remainingHoursSpent, "hour", ViewBag.IsMobileDevice)}";
 
     var sumPicturesTaken = Model.PicturesTakenPerMeeting.Sum(x => x.PicturesTaken);
 
@@ -66,7 +69,7 @@
                                         <td><a asp-controller="Meeting" asp-action="Details" asp-route-id="@row.MeetingId"><img src="@row.ImageUrl" class="img-thumbnail" style="height: 59px; width: 85px" /></a></td>
                                         <td class="align-middle">@row.Date.ToString("dd.MM.yyyy")</td>
                                         <td class="align-middle">@row.MeetingCity</td>
-                                        <td class="align-middle">@(row.Days)d @(row.Hours)h</td>
+                                        <td class="align-middle">@(row.Days) d @(row.Hours) h</td>
                                     </tr>
                                 }
                             }
@@ -78,7 +81,7 @@
                                         <td><a asp-controller="Meeting" asp-action="Details" asp-route-id="@row.MeetingId"><img src="@row.ImageUrl" class="img-thumbnail" style="height: 101px; width: 180px" /></a></td>
                                         <td class="align-middle">@row.Date.ToString("dd.MM.yyyy")</td>
                                         <td class="align-middle">@row.MeetingCity</td>
-                                        <td class="align-middle">@row.Days dni @row.Hours godzin</td>
+                                        <td class="align-middle">@row.Days @Inflections.GetPolishInflection(row.Days, "day") @row.Hours @Inflections.GetPolishInflection(row.Hours, "hour")</td>
                                     </tr>
                                 }
                             }
@@ -250,7 +253,7 @@ else
                 <th class="align-middle" scope="row">@row.Title</th>
                 <td class="align-middle">@row.Description</td>
                 <td class="align-middle">@row.Date.ToString("dd.MM.yyyy")</td>
-                <td class="align-middle">@row.DaysPassed</td>
+                <td class="align-middle">@Helpers.DateHelper.ConvertDaysToYearsMonthsDays(row.DaysPassed, ViewBag.IsMobileDevice)</td>
             </tr>
         }
     </tbody>
