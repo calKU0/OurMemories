@@ -1,10 +1,11 @@
 ﻿@model MemoriesWebApp.Models.Meeting
+@using MemoriesWebApp.Helpers
 
 @{
     ViewData["Title"] = "Szczegóły spotkania";
     var images = ViewBag.Images as List<MemoriesWebApp.Models.Image>;
     TimeSpan timeDifference = Model.DateEnd - Model.DateStart;
-    string timeDifferenceString = $"{timeDifference.Days} dni {timeDifference.Hours} godzin";
+    string timeDifferenceString = $"{timeDifference.Days} {Inflections.GetPolishInflection(timeDifference.Days, "day")} {timeDifference.Hours} {Inflections.GetPolishInflection(timeDifference.Hours, "hour")}";
 }
 <!-- Modal for confirmation deletion -->
 <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
