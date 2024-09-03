@@ -234,5 +234,5 @@ _Pvt_Extensions
 .fake/
 
 # Project
-/appsettings.json
-/MemoriesWebApp/appsettings.json
+/appsettings.Development.json
+/MemoriesWebApp/appsettings.Development.json
