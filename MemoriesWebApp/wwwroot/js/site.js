@@ -20,7 +20,7 @@ function updateClock() {
     const secondsRemaining = Math.ceil((timeRemaining % (1000 * 60)) / 1000);
 
     const countdownElement = document.getElementById("countdown");
-    countdownElement.innerHTML = `${days} dni ${hoursRemaining} godzin ${minutesRemaining} minut ${secondsRemaining} sekund`;
+    countdownElement.innerHTML = formatCountdown(days, hoursRemaining, minutesRemaining, secondsRemaining);
 
     const hands = [
         { id: "hourHand", deg: (360 / 24) * hours + (360 / 24) * (minutes / 60), value: hours, top: 75 },
@@ -97,6 +97,37 @@ function updateProgressBar(progress) {
 function formatDate(date) {
     const options = { day: 'numeric', month: 'numeric', year: 'numeric'};
     return date.toLocaleDateString('pl-PL', options);
+}
+
+function formatCountdown(days, hours, minutes, seconds) {
+    if (days > 0) return `${days} ${getPolishInflection(days, "day")} ${hours} ${getPolishInflection(hours, 'hour')} ${minutes} ${getPolishInflection(minutes, 'minute')} ${seconds} ${getPolishInflection(seconds, 'second')}`;
+    else if (hours > 0) return `${hours} ${getPolishInflection(hours, 'hour')} ${minutesRemaining} ${getPolishInflection(minutesRemaining, 'minute')} ${seconds} ${getPolishInflection(seconds, 'second')}`;
+    else if (minutes > 0) return `${minutes} ${getPolishInflection(minutes, 'minute')} ${seconds} ${getPolishInflection(seconds, 'second')}`;
+    else if (seconds > 0) return `${seconds} ${getPolishInflection(seconds, 'second')}`;
+    else return '';
+}
+
+function getPolishInflection(value, unit){
+    if (unit == "day") {
+        if (value == 1) return "dzień";
+        return "dni";
+    }
+    else if (unit == "hour") {
+        if (value == 1) return "godzina";
+        if (value >= 2 && value <= 4) return "godziny";
+        return "godzin";
+    }
+    else if (unit == "minute") {
+        if (value == 1) return "minuta";
+        if (value >= 2 && value <= 4) return "minuty";
+        return "minut";
+    }
+    else if (unit == "second") {
+        if (value == 1) return "sekunda";
+        if (value >= 2 && value <= 4) return "sekundy";
+        return "sekund";
+    }
+    return unit;
 }
 
 const startLabel = document.querySelector('.start-date');
