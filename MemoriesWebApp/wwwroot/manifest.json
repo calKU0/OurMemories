@@ -2,7 +2,7 @@
   "name": "Our Memories",
   "short_name": "Our Memories",
   "start_url": "/",
-  "display": "fullscreen",
+  "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#303434",
   "icons": [
