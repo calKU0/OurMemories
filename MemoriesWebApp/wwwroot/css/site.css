@@ -231,10 +231,24 @@ tfoot th, tfoot td {
     vertical-align: middle; /* Ensures vertical centering */
 }
 
+#image-album .card-img-top {
+    object-fit: contain;
+    max-height: 235px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    #image-album .card{
+        animation: fade-down linear forwards;
+        animation-timeline: view();
+        animation-range: entry 1px;
+    }
+}
+
+
 @keyframes fade-down {
     0% {
         opacity: 0;
-        transform: translateY(-40px) translateX(-40px) scale(0.8);
+        transform: translateY(-90px) translateX(-90px) scale(0.4);
     }
 
     100% {

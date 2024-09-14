@@ -38,8 +38,11 @@ namespace MemoriesWebApp.Controllers
 
             ViewBag.IsMobileDevice = isMobileDevice;
 
-            ViewBag.CurrentSort = sortDirection;
+            sortOrder = string.IsNullOrEmpty(sortOrder) ? "MeetingId" : sortOrder;
+            sortDirection = string.IsNullOrEmpty(sortDirection) ? "MeetingId" : sortDirection;
+
             ViewBag.SortDirection = sortDirection;
+            ViewBag.CurrentSort = sortDirection;
 
             var images = from i in _context.Images.Include(i => i.Meeting) select i;
 
@@ -247,6 +250,7 @@ namespace MemoriesWebApp.Controllers
 
                 TempData["ShowModal"] = true;
             }
+
             var meetings = _context.Meetings
                 .Select(m => new { m.Id, m.ImageUrl, m.MeetingCity, m.DateStart })
                 .ToList();

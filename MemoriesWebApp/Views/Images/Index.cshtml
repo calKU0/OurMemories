@@ -105,8 +105,6 @@
                             <option value="City">Miejscowość</option>
                         </select>
                         <button type="button" id="sortDirectionButton" class="btn btn-outline-secondary" onclick="toggleSortDirection()">
-                            <!--<i id="sortDirectionIcon" class="bi @arrowClass"></i>-->
-
                             <svg id="sortDirectionIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi @arrowClass" viewBox="0 0 16 16">
                                 <path id ="sortDirectionP" fill-rule="evenodd" d="@pclass" />
                             </svg>
@@ -119,7 +117,7 @@
     </div>
 </section>
 
-<div class="album py-3">
+<div class="album py-3" id="image-album">
     <div class="container">
         <div class="row">
             @foreach (var image in Model)
@@ -127,16 +125,16 @@
                 string imageCity = !string.IsNullOrEmpty(image.City) ? image.City : image.Meeting.MeetingCity.ToString();
                 string imageDate = image.Date != default ? image.Date.ToString("dd.MM.yyyy") : image.Meeting.DateStart.ToString("dd.MM.yyyy");
 
-                <div class="col-md-4 fadeDownClass">
+                <div class="col-md-4">
                     <div class="card mb-4 shadow-sm">
                         @if (image.IsVisableForUser || User.IsInRole("superuser") || User.IsInRole("admin"))
                         {
-                            <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="@image.Description" src="@image.Url">
+                            <img class="card-img-top" alt="@image.Description" src="@image.Url">
                         }
                         else //Adding blur and text in the middle of an Image
                         {
                             <div class="blurImageContainer position-relative">
-                                <img class="card-img-top blurImage" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="@image.Description" src="@image.Url">
+                                <img class="card-img-top blurImage" alt="@image.Description" src="@image.Url">
                                 <span class="textOverImage fw-bold d-flex container-fluid justify-content-center">Tylko dla upoważnionych</span>
                             </div>
                         }
@@ -190,43 +188,78 @@
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var currentSort = '@baseSort';
-            var isDescending = '@isDescending'.toLowerCase() === 'true';
+    document.addEventListener('DOMContentLoaded', function () {
+        var sortOrder = sessionStorage.getItem('sortOrder');
+        var sortDirection = sessionStorage.getItem('sortDirection');
 
-            document.getElementById('sortOrder').value = currentSort;
+        var url = new URL(window.location.href);
+
+        var currentSortOrder = url.searchParams.get('sortOrder');
+        var currentSortDirection = url.searchParams.get('sortDirection');
+
+        if (sortOrder && sortDirection && (!currentSortOrder || !currentSortDirection)) {
+            url.searchParams.set('sortOrder', sortOrder);
+            url.searchParams.set('sortDirection', sortDirection);
+
+            window.location.href = url.toString();
+        }
+
+        if (sortOrder) {
+            document.getElementById('sortOrder').value = sortOrder;
+        }
+
+        if (sortDirection) {
+            document.getElementById('sortDirection').value = sortDirection;
+
+            // Adjust icon direction based on stored sort direction
             var sortDirectionIcon = document.getElementById('sortDirectionIcon');
-            var sortDirectionP = document.getElementById('sortDirectionP');
-        });
-
-        function toggleSortDirection() {
-            var sortOrder = document.getElementById('sortOrder').value;
-            var sortDirectionInput = document.getElementById('sortDirection');
-            var sortDirectionIcon = document.getElementById('sortDirectionIcon');
-
-            if (sortDirectionIcon.classList.contains('bi-arrow-up')) {
-                sortDirectionInput.value = sortOrder + '_desc';
+            if (sortDirection.endsWith('_desc')) {
                 sortDirectionIcon.classList.remove('bi-arrow-up');
                 sortDirectionIcon.classList.add('bi-arrow-down');
             } else {
-                sortDirectionInput.value = sortOrder;
                 sortDirectionIcon.classList.remove('bi-arrow-down');
                 sortDirectionIcon.classList.add('bi-arrow-up');
             }
+        }
+    });
 
-            document.getElementById('sortForm').submit();
+    function toggleSortDirection() {
+        var sortOrder = document.getElementById('sortOrder').value;
+        var sortDirectionInput = document.getElementById('sortDirection');
+        var sortDirectionIcon = document.getElementById('sortDirectionIcon');
+
+        if (sortDirectionIcon.classList.contains('bi-arrow-up')) {
+            sortDirectionInput.value = sortOrder + '_desc';
+            sortDirectionIcon.classList.remove('bi-arrow-up');
+            sortDirectionIcon.classList.add('bi-arrow-down');
+        } else {
+            sortDirectionInput.value = sortOrder;
+            sortDirectionIcon.classList.remove('bi-arrow-down');
+            sortDirectionIcon.classList.add('bi-arrow-up');
         }
 
-        document.getElementById("sortOrder").addEventListener("change", function () {
-            var sortDirectionInput = document.getElementById("sortDirection");
-            var sortDirectionIcon = document.getElementById('sortDirectionIcon');
+        // Store updated sort values in SessionStorage
+        sessionStorage.setItem('sortOrder', sortOrder);
+        sessionStorage.setItem('sortDirection', sortDirectionInput.value);
 
-            if (sortDirectionIcon.classList.contains('bi-arrow-down')) {
-                sortDirectionInput.value = this.value + '_desc';
-            } else {
-                sortDirectionInput.value = this.value;
-            }
-            document.getElementById("sortForm").submit();
-        });
+        document.getElementById('sortForm').submit();
+    }
+
+    document.getElementById("sortOrder").addEventListener("change", function () {
+        var sortDirectionInput = document.getElementById("sortDirection");
+        var sortDirectionIcon = document.getElementById('sortDirectionIcon');
+
+        if (sortDirectionIcon.classList.contains('bi-arrow-down')) {
+            sortDirectionInput.value = this.value + '_desc';
+        } else {
+            sortDirectionInput.value = this.value;
+        }
+
+        // Store updated sort values in SessionStorage
+        sessionStorage.setItem('sortOrder', this.value);
+        sessionStorage.setItem('sortDirection', sortDirectionInput.value);
+
+        document.getElementById("sortForm").submit();
+    });
     </script>
 }
