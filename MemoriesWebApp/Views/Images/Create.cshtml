@@ -139,17 +139,12 @@
 
                     cropper = new Cropper(img, {
                         viewMode: 1,
-                        aspectRatio: 1280 / 720,
                         cropBoxResizable: false,
                         cropBoxMovable: true,
                         dragMode: 'move',
                         ready: function () {
                             const containerData = cropper.getContainerData();
                             const aspectRatio = cropper.options.aspectRatio;
-
-                            let cropBoxWidth = 1280;
-                            let cropBoxHeight = 720;
-
 
                             cropper.setCropBoxData({
                                 width: cropBoxWidth,
