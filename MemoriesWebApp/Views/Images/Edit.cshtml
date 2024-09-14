@@ -57,7 +57,7 @@
     </div>
 </div>
 
-<form id="editForm" method="post" class="needs-validation novalidate" asp-action="Edit" enctype="multipart/form-data">
+<form id="editForm" method="post" class="needs-validation" asp-action="Edit" enctype="multipart/form-data">
     <div class="form-group row pt-3">
         <label asp-for="Name" class="col-sm-2 col-form-label">Nazwa zdjęcia</label>
         <div class="col-sm-10">
@@ -95,7 +95,14 @@
                 @foreach (var meeting in ViewBag.Meetings)
                 {
                     <div class="col-sm-3 mb-3">
-                        <img src="@meeting.ImageUrl" class="img-thumbnail selectable-meeting" style="cursor: pointer;" onclick="selectMeeting('@meeting.Id', '@meeting.ImageUrl')">
+                        @if (@meeting.Id == Model.MeetingId)
+                        {
+                            <img src="@meeting.ImageUrl" class="img-thumbnail selected-meeting selectable-meeting" style="cursor: pointer;" onclick="selectMeeting('@meeting.Id', '@meeting.ImageUrl')" data-meeting-id="@meeting.Id">
+                        }
+                        else
+                        {
+                            <img src="@meeting.ImageUrl" class="img-thumbnail selectable-meeting" style="cursor: pointer;" onclick="selectMeeting('@meeting.Id', '@meeting.ImageUrl')" data-meeting-id="@meeting.Id">
+                        }
                         <div class="row">
                             <div class="col text-left">
                                 <strong>
@@ -163,8 +170,6 @@
 
 
         function selectMeeting(meetingId, imageUrl) {
-            document.getElementById("selectedMeetingId").value = meetingId;
-
             var meetings = document.querySelectorAll('.selectable-meeting');
             meetings.forEach(function (meeting) {
                 meeting.classList.remove('selected-meeting');
@@ -199,17 +204,12 @@
 
                     cropper = new Cropper(img, {
                         viewMode: 1,
-                        aspectRatio: 1280 / 720,
                         cropBoxResizable: false, 
                         cropBoxMovable: true, 
                         dragMode: 'move', 
                         ready: function () {
                             const containerData = cropper.getContainerData();
                             const aspectRatio = cropper.options.aspectRatio;
-
-                            let cropBoxWidth = 1280;
-                            let cropBoxHeight = 720;
-
 
                             cropper.setCropBoxData({
                                 width: cropBoxWidth,
@@ -238,6 +238,7 @@
                     $('#editForm').submit();
                 });
             } else {
+                document.getElementById("selectedMeetingId").value = document.querySelector('.selected-meeting').dataset.meetingId;
                 $('#editForm').submit();
             }
         });
