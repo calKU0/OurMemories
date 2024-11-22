@@ -10,6 +10,7 @@ namespace MemoriesWebApp.ViewModels
         public DateTime DateEnd { get; set; }
         public MeetingCity MeetingCity { get; set; }
         public IFormFile? Image { get; set; }
+        public string? Description { get; set; }
         public string? Url { get; set; }
         public bool Realized { get; set; }
     }

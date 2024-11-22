@@ -85,6 +85,7 @@ namespace MemoriesWebApp.Controllers
                     DateStart = meetingVM.DateStart,
                     DateEnd = meetingVM.DateEnd,
                     Realized = meetingVM.Realized,
+                    Description = meetingVM.Description,
                     ImageUrl = result != null ? result.Result.Url.ToString() : "https://i.imgur.com/clR6N7I.png"
                 };
 
@@ -118,6 +119,7 @@ namespace MemoriesWebApp.Controllers
                 DateEnd = meeting.DateEnd,
                 MeetingCity = meeting.MeetingCity,
                 Url = meeting.ImageUrl,
+                Description = meeting.Description,
                 Realized = meeting.Realized,
             };
             return View(meetingVM);
@@ -151,6 +153,7 @@ namespace MemoriesWebApp.Controllers
                     DateStart = meetingVM.DateStart,
                     DateEnd = meetingVM.DateEnd,
                     MeetingCity = meetingVM.MeetingCity,
+                    Description = meetingVM.Description,
                     ImageUrl = url,
                     Realized = meetingVM.Realized,
                 };

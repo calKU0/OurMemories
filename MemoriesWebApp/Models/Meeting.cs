@@ -11,6 +11,7 @@ namespace MemoriesWebApp.Models
         public DateTime DateStart { get; set; }
         public DateTime DateEnd { get; set; }
         public MeetingCity MeetingCity { get; set; }
+        public string? Description { get; set; }
         public string? ImageUrl { get; set; }
         public bool Realized { get; set; }
         [ForeignKey("AppUser")]
