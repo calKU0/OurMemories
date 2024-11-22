@@ -15,6 +15,15 @@ body {
     flex-direction: column;
 }
 
+.cropper-bg {
+    background-color: #212529;
+    background-image: none !important;
+}
+
+.cropper-modal{
+    opacity: 0 !important;
+}
+
 .clock-container {
     margin-top: -40px;
     display: flex;
