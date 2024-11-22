@@ -114,7 +114,7 @@
             <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                 @if (Model.PreviousId.HasValue)
                 {
-                    <a type="button" class="btn btn-outline-primary px-3" asp-controller="Images" asp-action="Details" asp-route-id="@Model.PreviousId.Value">
+                    <a id="previousButton" type="button" class="btn btn-outline-primary px-3" asp-controller="Images" asp-action="Details" asp-route-id="@Model.PreviousId.Value">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
                         </svg>
@@ -138,7 +138,7 @@
                 }
                 @if (Model.NextId.HasValue)
                 {
-                    <a type="button" class="btn btn-outline-primary px-3" asp-controller="Images" asp-action="Details" asp-route-id="@Model.NextId.Value">
+                    <a id="nextButton" type="button" class="btn btn-outline-primary px-3" asp-controller="Images" asp-action="Details" asp-route-id="@Model.NextId.Value">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8" />
                         </svg>
@@ -148,3 +148,21 @@
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "ArrowLeft" || event.keyCode === 37) {
+                var prevButton = document.getElementById("previousButton");
+                if (prevButton) {
+                    window.location.href = prevButton.href;
+                }
+            } else if (event.key === "ArrowRight" || event.keyCode === 39) {
+                var nextButton = document.getElementById("nextButton");
+                if (nextButton) {
+                    window.location.href = nextButton.href;
+                }
+            }
+        });
+    </script>
+}
