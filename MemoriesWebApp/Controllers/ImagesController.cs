@@ -52,13 +52,13 @@ namespace MemoriesWebApp.Controllers
                 switch (sortDirection)
                 {
                     case "Date_desc":
-                        images = images.OrderByDescending(i => i.Date);
+                        images = images.OrderByDescending(i => i.Date).ThenByDescending(i => i.Id);
                         break;
                     case "City_desc":
                         images = images.OrderByDescending(i => i.City);
                         break;
                     case "MeetingId_desc":
-                        images = images.OrderByDescending(i => i.MeetingId);
+                        images = images.OrderByDescending(i => i.MeetingId).ThenByDescending(i => i.Id);
                         break;
                     default:
                         if (sortOrder == "Date")
