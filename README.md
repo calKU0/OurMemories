@@ -1,21 +1,20 @@
-# OurMemories
+# Our Memories
 
-OurMemories is an online platform for saving memories with your partner (espesially long distance one).
-It has a digital-analog clock and countdown for your upcoming meeting.
-It allows you to upload your photos and make an album out of each meeting
+## Overview
 
-## 🏃 Getting Started
+An album application for couples, allowing them to store and cherish shared memories. This was my first ASP.NET MVC project, where I implemented user authentication and data management features.
 
-1. Go into directory where you plan on keeping project and run.
+## Features
 
-```bash
-  git fork https://github.com/calKU0/OurMemories.git
-```
+- User authentication system
+- Memory storage and management
+- User-friendly interface
 
-2. Create a local database. (If you are unsure how to do this, watch some YouTube videos)
+## Technologies Used
 
-3. Add connection string to app settings.json. It will look something like this:
-```bash
-  Data Source=DESKTOP-EI2TOGP\\SQLEXPRESS;Initial Catalog=OurMemories;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
-```
-4. Register for a [Cloudinary Account](https://cloudinary.com/users/register/free) (%100 free) and add Cloudname, ApiKey, and Api secret to appsettings.json.
+- **Frameworks:** ASP.NET MVC, Entity Framework, Identity Framework
+- **Technologies:** C#, HTML, CSS, JavaScript, SQL Server
+
+## Live Demo
+
+[Visit Our Memories](https://ourmemories.azurewebsites.net)
