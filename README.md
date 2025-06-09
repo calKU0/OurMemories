@@ -1,5 +1,7 @@
 # Our Memories
 
+> 🧪 **Personal Project** — built for experimentation, fun, or learning.
+
 ## Overview
 
 An album application for couples, allowing them to store and cherish shared memories. This was my first ASP.NET MVC project, where I implemented user authentication and data management features.
